@@ -168,10 +168,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-08-06 02:08:38 / Modified: 16:15:37" itemprop="dateCreated datePublished" datetime="2020-08-06T02:08:38+08:00">2020-08-06</time>
+              <time title="Created: 2020-08-06 02:08:38" itemprop="dateCreated datePublished" datetime="2020-08-06T02:08:38+08:00">2020-08-06</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-08-07 12:01:41" itemprop="dateModified" datetime="2020-08-07T12:01:41+08:00">2020-08-07</time>
+              </span>
 
           
 
@@ -184,78 +190,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="基于Hexo-Next-Github-搭建个人博客"><a href="#基于Hexo-Next-Github-搭建个人博客" class="headerlink" title="基于Hexo + Next  + Github 搭建个人博客"></a>基于Hexo + Next  + Github 搭建个人博客</h1><p>默认已拥有Github账号，且已安装好了git。</p>
-<h2 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h2><p>下载地址：<a target="_blank" rel="noopener" href="https://nodejs.org/en/">Node.js 官网</a></p>
-<p>安装过程全程next，最后安装好之后，按<code>Win+R</code>打开命令提示符，输入<code>node -v</code>和<code>npm -v</code>，如果出现版本号，那么就安装成功了。</p>
-<h2 id="添加国内镜像源"><a href="#添加国内镜像源" class="headerlink" title="添加国内镜像源"></a>添加国内镜像源</h2><p>添加阿里的国内镜像源进行加速，也可以用梯子。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm config set registry https:&#x2F;&#x2F;registry.npm.taobao.org</span><br></pre></td></tr></table></figure>
-
-<h2 id="创建github-io仓库"><a href="#创建github-io仓库" class="headerlink" title="创建github.io仓库"></a>创建github.io仓库</h2><p>和新建仓库的流程相似，不过在输入项目名字时，后面需要加上<code>github.io</code>后缀，README初始化要勾选。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/image-20200806000156591.png" alt="image-20200806000156591"></p>
-<p>项目建成后，点击<code>Settings</code> ,拉到最下方<code>Github Pages</code>的位置，点击<code>Choose a theme</code>选择一个主题。选取主题后进行提交。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/image-20200806000614183.png" alt="image-20200806000614183"></p>
-<p>访问你的博客链接 <a target="_blank" rel="noopener" href="https://wzymumon.github.io/">wzymumon.github.io</a>，就会出现下面的效果：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/image-20200806000725301.png" alt="image-20200806000725301"></p>
-<h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h2><p>在合适的地方新建一个文件夹，用来存放自己的博客文件，比如我的博客文件都存放在<code>F:\blog</code>目录下。</p>
-<p>在该目录下右键点击<code>Git Bash Here</code>，打开git的控制台窗口，以后我们所有的操作都在git控制台进行。</p>
-<p>定位到该目录下，输入<code>npm i hexo-cli -g</code>安装Hexo。会有几个报错，无视它就行。</p>
-<p>安装完后输入<code>hexo -v</code>验证是否安装成功。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/image-20200806001027544.png" alt="image-20200806001027544"></p>
-<p>然后就要初始化我们的网站，输入<code>hexo init</code>初始化文件夹，接着输入<code>npm install</code>安装必备的组件。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/image-20200806001151999.png" alt="image-20200806001151999"></p>
-<p>这样本地的网站配置也弄好啦，输入<code>hexo g</code>生成静态网页，然后输入<code>hexo s</code>打开本地服务器，然后浏览器打开<a href="https://link.zhihu.com/?target=http://localhost:4000/">http://localhost:4000/</a>，就可以看到我们的博客啦，效果如下：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/image-20200806001624209.png" alt="image-20200806001624209"></p>
-<h2 id="连接Github与本地"><a href="#连接Github与本地" class="headerlink" title="连接Github与本地"></a>连接Github与本地</h2><p>配置SSH Key（这个以后会重新总结一遍流程）</p>
-<p>打开博客根目录下的<code>_config.yml</code>文件，这是博客的配置文件，在这里你可以修改与博客相关的各种信息。</p>
-<p>修改最后一行的配置：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: git</span><br><span class="line">  repository: https://github.com/wzymumon/wzymumon.github.io</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure>
-
-<p>repository修改为你自己的github项目地址。</p>
-<h2 id="写文章、发布文章"><a href="#写文章、发布文章" class="headerlink" title="写文章、发布文章"></a>写文章、发布文章</h2><p>首先在博客根目录下右键打开git bash，安装扩展<code>npm i hexo-deployer-git</code>。</p>
-<p>博客上的文章都位于<code>F:\blog\source\_posts</code>的目录下，可以发现该目录下面多了一个文件夹和一个<code>.md</code>文件，一个用来存放你的图片等数据，另一个用来存放你的markdown文档。</p>
-<ul>
-<li>新建文章。</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new post &quot;article title&quot;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>生成静态网页</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>使用本地服务器预览效果</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo s --debug</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>上传到Github</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo d</span><br></pre></td></tr></table></figure>
-
-<h2 id="备份博客源文件"><a href="#备份博客源文件" class="headerlink" title="备份博客源文件"></a>备份博客源文件</h2><p>有时候我们想换一台电脑继续写博客，这时候就可以将博客目录下的所有源文件都上传到github上面。</p>
-<p>首先在github博客仓库下新建一个分支<code>hexo</code>，然后<code>git clone</code>到本地，把<code>.git</code>文件夹拿出来，放在博客根目录下。</p>
-<p>然后<code>git branch -b hexo</code>切换到<code>hexo</code>分支，然后<code>git add .</code>，然后<code>git commit -m &quot;xxx&quot;</code>，最后<code>git push origin hexo</code>提交就行了。</p>
-<h2 id="使用NexT主题"><a href="#使用NexT主题" class="headerlink" title="使用NexT主题"></a>使用NexT主题</h2><p>链接 ：<a target="_blank" rel="noopener" href="https://theme-next.iissnan.com/getting-started.html">NexT安装文档</a></p>
-<p>注意：该文档有些过时了，NexT的地址当前改为了<a target="_blank" rel="noopener" href="https://github.com/theme-next/hexo-theme-next%EF%BC%8C%E7%9B%AE%E5%89%8D%E5%85%B6%E7%89%88%E6%9C%AC%E5%B7%B2%E8%BF%AD%E4%BB%A3%E5%88%B07.0%E4%BB%A5%E4%B8%8A%E3%80%82">https://github.com/theme-next/hexo-theme-next，目前其版本已迭代到7.0以上。</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd your-hexo-site</span><br><span class="line">$ git clone https:&#x2F;&#x2F;github.com&#x2F;theme-next&#x2F;hexo-theme-next themes&#x2F;next</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/image-20200806015100160.png" alt="image-20200806015100160"></p>
-<h2 id="配置图床"><a href="#配置图床" class="headerlink" title="配置图床"></a>配置图床</h2><p>使用typora + PicGo + Github进行搭建图床。</p>
-<p>PicGo设置</p>
-<p>仓库名 ：即你的仓库名</p>
-<p>分支名 ：默认 <code>master</code></p>
-<p>Token ：就是刚刚复制的那一串字符</p>
-<p>存储路径： 这个不填，填了的话图片就上传到 git 中 <code>data</code> 这个文件夹</p>
-<p>域名 ：<code>https://cdn.jsdelivr.net/gh/github用户名/仓库名@分支</code></p>
-<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/image-20200806160928853.png" alt="image-20200806160928853"></p>
-<p>在Typora 的<code>文件</code>目录下,点击<code>偏好设置</code>。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/image-20200806160727674.png" alt="image-20200806160727674"></p>
-<h2 id="NexT主题配置"><a href="#NexT主题配置" class="headerlink" title="NexT主题配置"></a>NexT主题配置</h2><p>链接：<a target="_blank" rel="noopener" href="https://theme-next.iissnan.com/theme-settings.html#tags-page">NexT主题配置</a></p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/35668237">超详细Hexo+Github博客搭建小白教程</a></p>
-<p><a target="_blank" rel="noopener" href="https://theme-next.iissnan.com/getting-started.html">NexT安装文档</a></p>
-<p><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">hexo安装文档</a></p>
-
+          <p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/hexo-logo-avatar.png" alt="hexo-logo-avatar"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/08/06/%E5%9F%BA%E4%BA%8EHexo-Next-Github-%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
