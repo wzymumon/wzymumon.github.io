@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/%E5%AD%97%E8%8A%82%E8%B7%B3%E5%8A%A8.jpg">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/B+%E6%A0%91.png">
 <meta property="article:published_time" content="2020-08-07T17:20:53.000Z">
-<meta property="article:modified_time" content="2020-08-07T17:28:58.176Z">
+<meta property="article:modified_time" content="2020-08-07T17:35:54.721Z">
 <meta property="article:author" content="mumon">
 <meta property="article:tag" content="面经">
 <meta name="twitter:card" content="summary">
@@ -176,7 +176,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-08-08 01:20:53 / Modified: 01:28:58" itemprop="dateCreated datePublished" datetime="2020-08-08T01:20:53+08:00">2020-08-08</time>
+              <time title="Created: 2020-08-08 01:20:53 / Modified: 01:35:54" itemprop="dateCreated datePublished" datetime="2020-08-08T01:20:53+08:00">2020-08-08</time>
             </span>
 
           
@@ -233,16 +233,27 @@
 <p>同步异步，阻塞和非阻塞，四个概念。</p>
 <p>还有一些自己项目相关的问题以及其它的印象不是很深刻的就不说了。</p>
 </blockquote>
-<h1 id="手撕代码"><a href="#手撕代码" class="headerlink" title="手撕代码"></a>手撕代码</h1><h2 id="一面"><a href="#一面" class="headerlink" title="一面"></a>一面</h2><h3 id="括号匹配算法"><a href="#括号匹配算法" class="headerlink" title="括号匹配算法"></a>括号匹配算法</h3><p>  <a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/valid-parentheses/">20. 有效的括号</a>   </p>
+<h1 id="手撕代码"><a href="#手撕代码" class="headerlink" title="手撕代码"></a>手撕代码</h1><h2 id="一面"><a href="#一面" class="headerlink" title="一面"></a>一面</h2><h3 id="括号匹配算法"><a href="#括号匹配算法" class="headerlink" title="括号匹配算法"></a>括号匹配算法</h3><blockquote>
+<p>  <a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/valid-parentheses/">20. 有效的括号</a>   </p>
+</blockquote>
 <p><strong>思路</strong>： 使用栈 </p>
-<h3 id="统计ID"><a href="#统计ID" class="headerlink" title="统计ID"></a>统计ID</h3><p> 统计一个日志文件（里面存放的是id,每访问一次会有一行id）前10个出现的id；  </p>
+<h3 id="统计ID"><a href="#统计ID" class="headerlink" title="统计ID"></a>统计ID</h3><blockquote>
+<p> 统计一个日志文件（里面存放的是id,每访问一次会有一行id）前10个出现的id；  </p>
+</blockquote>
 <p><strong>思路</strong>：先分块，再把id相同的映射到同一个块，hash或者取模</p>
-<h2 id="二面"><a href="#二面" class="headerlink" title="二面"></a>二面</h2><h3 id="最长不重复子串"><a href="#最长不重复子串" class="headerlink" title="最长不重复子串"></a>最长不重复子串</h3><p> <a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/">3. 无重复字符的最长子串</a></p>
+<h2 id="二面"><a href="#二面" class="headerlink" title="二面"></a>二面</h2><h3 id="最长不重复子串"><a href="#最长不重复子串" class="headerlink" title="最长不重复子串"></a>最长不重复子串</h3><blockquote>
+<p> <a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/">3. 无重复字符的最长子串</a></p>
+</blockquote>
 <p><strong>思路：</strong> 双指针，用boolean标记所有字符是否已出现，或者用set</p>
-<h3 id="机器人走路算法"><a href="#机器人走路算法" class="headerlink" title="机器人走路算法"></a>机器人走路算法</h3><p><strong>思路</strong>：（DFS+标记算法，可以写伪代码解释，我写了代码，但面试官说回溯有点标记问题），左上角走到右下角，求可能的路径中和最小的那个值</p>
+<h3 id="机器人走路算法"><a href="#机器人走路算法" class="headerlink" title="机器人走路算法"></a>机器人走路算法</h3><blockquote>
+<p>左上角走到右下角，求可能的路径中和最小的那个值</p>
+</blockquote>
+<p><strong>思路</strong>：DFS + 标记</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//伪代码</span></span><br><span class="line"><span class="keyword">int</span> res = MAX_VALUE</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(i, j, grid, visited, sum)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> 当前路径和大于res：  </span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> 无法访问该节点或已访问过：</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    sum += grid[i][j];</span><br><span class="line">    visited[i][j] = <span class="keyword">true</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> 抵达右下角：</span><br><span class="line">        res = Min(res, sum);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    </span><br><span class="line">    dfs() * <span class="number">4</span>;</span><br><span class="line">    </span><br><span class="line">    sum -= grid[i][j]</span><br><span class="line">    visited[i][j] = <span class="keyword">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="三面"><a href="#三面" class="headerlink" title="三面"></a>三面</h2><h3 id="LRU缓存机制"><a href="#LRU缓存机制" class="headerlink" title="LRU缓存机制"></a>LRU缓存机制</h3><p> <a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/lru-cache/">146. LRU缓存机制</a></p>
+<h2 id="三面"><a href="#三面" class="headerlink" title="三面"></a>三面</h2><h3 id="LRU缓存机制"><a href="#LRU缓存机制" class="headerlink" title="LRU缓存机制"></a>LRU缓存机制</h3><blockquote>
+<p> <a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/lru-cache/">146. LRU缓存机制</a></p>
+</blockquote>
 <p><strong>思路：</strong> LRU 缓存机制可以通过哈希表辅以双向链表实现，我们用一个哈希表和一个双向链表维护所有在缓存中的键值对。</p>
 <ul>
 <li><p>双向链表按照被使用的顺序存储了这些键值对，<strong>靠近头部的键值对是最近使用的，而靠近尾部的键值对是最久未使用的</strong>。</p>
