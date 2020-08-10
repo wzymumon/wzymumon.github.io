@@ -20,28 +20,33 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Mumon&#39;s Blogs">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="Shopee秋招一面手撕代码合并二路链表  21. 合并两个有序链表 面试内容数据库redis的基础数据结构？mysql为什么要有索引？有哪些索引？聚簇索引和非聚簇索引的区别？什么是事务？事务的四大特性？数据库的隔离级别？什么是可重复读？计算机网络输入URL到页面展示，经历了什么流程？TCP三次握手？为什么要三次而不是两次？操作系统进程与线程的区别？java项目中是不是一定有线程？LinuxLin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shopee后端开发一面">
+<meta property="og:url" content="http://yoursite.com/2020/08/10/Shopee%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91%E4%B8%80%E9%9D%A2/index.html">
 <meta property="og:site_name" content="Mumon&#39;s Blogs">
+<meta property="og:description" content="Shopee秋招一面手撕代码合并二路链表  21. 合并两个有序链表 面试内容数据库redis的基础数据结构？mysql为什么要有索引？有哪些索引？聚簇索引和非聚簇索引的区别？什么是事务？事务的四大特性？数据库的隔离级别？什么是可重复读？计算机网络输入URL到页面展示，经历了什么流程？TCP三次握手？为什么要三次而不是两次？操作系统进程与线程的区别？java项目中是不是一定有线程？LinuxLin">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-08-10T12:04:43.000Z">
+<meta property="article:modified_time" content="2020-08-10T12:09:17.409Z">
 <meta property="article:author" content="mumon">
+<meta property="article:tag" content="面经">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/">
+<link rel="canonical" href="http://yoursite.com/2020/08/10/Shopee%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91%E4%B8%80%E9%9D%A2/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'en'
   };
 </script>
 
-  <title>Mumon's Blogs</title>
+  <title>Shopee后端开发一面 | Mumon's Blogs</title>
   
 
 
@@ -139,9 +144,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -157,10 +163,9 @@
       <meta itemprop="name" content="Mumon's Blogs">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/10/Shopee%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91%E4%B8%80%E9%9D%A2/" class="post-title-link" itemprop="url">Shopee后端开发一面</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          Shopee后端开发一面
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -184,7 +189,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="Shopee秋招一面"><a href="#Shopee秋招一面" class="headerlink" title="Shopee秋招一面"></a>Shopee秋招一面</h1><h2 id="手撕代码"><a href="#手撕代码" class="headerlink" title="手撕代码"></a>手撕代码</h2><p>合并二路链表</p>
+        <h1 id="Shopee秋招一面"><a href="#Shopee秋招一面" class="headerlink" title="Shopee秋招一面"></a>Shopee秋招一面</h1><h2 id="手撕代码"><a href="#手撕代码" class="headerlink" title="手撕代码"></a>手撕代码</h2><p>合并二路链表</p>
 <blockquote>
 <h4 id="21-合并两个有序链表"><a href="#21-合并两个有序链表" class="headerlink" title="21. 合并两个有序链表"></a><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/merge-two-sorted-lists/">21. 合并两个有序链表</a></h4></blockquote>
 <h2 id="面试内容"><a href="#面试内容" class="headerlink" title="面试内容"></a>面试内容</h2><h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><h4 id="redis的基础数据结构？"><a href="#redis的基础数据结构？" class="headerlink" title="redis的基础数据结构？"></a>redis的基础数据结构？</h4><h4 id="mysql为什么要有索引？有哪些索引？"><a href="#mysql为什么要有索引？有哪些索引？" class="headerlink" title="mysql为什么要有索引？有哪些索引？"></a>mysql为什么要有索引？有哪些索引？</h4><h4 id="聚簇索引和非聚簇索引的区别？"><a href="#聚簇索引和非聚簇索引的区别？" class="headerlink" title="聚簇索引和非聚簇索引的区别？"></a>聚簇索引和非聚簇索引的区别？</h4><h4 id="什么是事务？事务的四大特性？"><a href="#什么是事务？事务的四大特性？" class="headerlink" title="什么是事务？事务的四大特性？"></a>什么是事务？事务的四大特性？</h4><h4 id="数据库的隔离级别？"><a href="#数据库的隔离级别？" class="headerlink" title="数据库的隔离级别？"></a>数据库的隔离级别？</h4><h4 id="什么是可重复读？"><a href="#什么是可重复读？" class="headerlink" title="什么是可重复读？"></a>什么是可重复读？</h4><h3 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h3><h4 id="输入URL到页面展示，经历了什么流程？"><a href="#输入URL到页面展示，经历了什么流程？" class="headerlink" title="输入URL到页面展示，经历了什么流程？"></a>输入URL到页面展示，经历了什么流程？</h4><h4 id="TCP三次握手？"><a href="#TCP三次握手？" class="headerlink" title="TCP三次握手？"></a>TCP三次握手？</h4><h4 id="为什么要三次而不是两次？"><a href="#为什么要三次而不是两次？" class="headerlink" title="为什么要三次而不是两次？"></a>为什么要三次而不是两次？</h4><h3 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h3><h4 id="进程与线程的区别？"><a href="#进程与线程的区别？" class="headerlink" title="进程与线程的区别？"></a>进程与线程的区别？</h4><h4 id="java项目中是不是一定有线程？"><a href="#java项目中是不是一定有线程？" class="headerlink" title="java项目中是不是一定有线程？"></a>java项目中是不是一定有线程？</h4><h3 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h3><h4 id="Linux用过哪些命令？"><a href="#Linux用过哪些命令？" class="headerlink" title="Linux用过哪些命令？"></a>Linux用过哪些命令？</h4><h4 id="kill-9可能会导致哪些问题？"><a href="#kill-9可能会导致哪些问题？" class="headerlink" title="kill -9可能会导致哪些问题？"></a>kill -9可能会导致哪些问题？</h4><h4 id="在服务器上部署项目后，怎么查看项目日志？"><a href="#在服务器上部署项目后，怎么查看项目日志？" class="headerlink" title="在服务器上部署项目后，怎么查看项目日志？"></a>在服务器上部署项目后，怎么查看项目日志？</h4><h3 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h3><h4 id="你们团队怎么进行版本管理的？"><a href="#你们团队怎么进行版本管理的？" class="headerlink" title="你们团队怎么进行版本管理的？"></a>你们团队怎么进行版本管理的？</h4><h4 id="git-rebase是干什么的？"><a href="#git-rebase是干什么的？" class="headerlink" title="git rebase是干什么的？"></a><code>git rebase</code>是干什么的？</h4><h4 id="git-merge在什么情况下使用的？"><a href="#git-merge在什么情况下使用的？" class="headerlink" title="git merge在什么情况下使用的？"></a><code>git merge</code>在什么情况下使用的？</h4><h3 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h3><h4 id="JVM内存模型？"><a href="#JVM内存模型？" class="headerlink" title="JVM内存模型？"></a>JVM内存模型？</h4><h4 id="JDK-1-8之前的堆分区？新时代，老年代？"><a href="#JDK-1-8之前的堆分区？新时代，老年代？" class="headerlink" title="JDK 1.8之前的堆分区？新时代，老年代？"></a>JDK 1.8之前的堆分区？新时代，老年代？</h4><h4 id="GC的流程？"><a href="#GC的流程？" class="headerlink" title="GC的流程？"></a>GC的流程？</h4><h4 id="什么时候GC？"><a href="#什么时候GC？" class="headerlink" title="什么时候GC？"></a>什么时候GC？</h4><ol>
@@ -194,297 +199,33 @@
 </li>
 </ol>
 <h4 id="在方法栈中会发生GC么？"><a href="#在方法栈中会发生GC么？" class="headerlink" title="在方法栈中会发生GC么？"></a>在方法栈中会发生GC么？</h4><h4 id="如何判断对象是否死亡？"><a href="#如何判断对象是否死亡？" class="headerlink" title="如何判断对象是否死亡？"></a>如何判断对象是否死亡？</h4><h4 id="JDK-1-8之后的GC有了解么？"><a href="#JDK-1-8之后的GC有了解么？" class="headerlink" title="JDK 1.8之后的GC有了解么？"></a>JDK 1.8之后的GC有了解么？</h4><h3 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h3><h4 id="Docker的好处？"><a href="#Docker的好处？" class="headerlink" title="Docker的好处？"></a>Docker的好处？</h4>
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          <div class="post-tags">
+              <a href="/tags/%E9%9D%A2%E7%BB%8F/" rel="tag"># 面经</a>
+          </div>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/10/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%A4%8D%E4%B9%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="mumon">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mumon's Blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/10/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%A4%8D%E4%B9%A0/" class="post-title-link" itemprop="url">操作系统复习</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2020-08-10 16:07:01 / Modified: 16:23:10" itemprop="dateCreated datePublished" datetime="2020-08-10T16:07:01+08:00">2020-08-10</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200810162137.jpg" alt="Linux"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/08/10/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%A4%8D%E4%B9%A0/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/10/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="mumon">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mumon's Blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/10/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0/" class="post-title-link" itemprop="url">计算机网络复习</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2020-08-10 16:06:53 / Modified: 16:23:05" itemprop="dateCreated datePublished" datetime="2020-08-10T16:06:53+08:00">2020-08-10</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200810162258.jpg" alt="计算机网络"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/08/10/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%A4%8D%E4%B9%A0/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/10/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%A4%8D%E4%B9%A0/" rel="prev" title="操作系统复习">
+      <i class="fa fa-chevron-left"></i> 操作系统复习
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/08/%E8%BD%AC%E8%BD%BD-%E5%AD%97%E8%8A%82%E8%B7%B3%E5%8A%A8%E5%B9%BF%E5%91%8A%E7%B3%BB%E7%BB%9F%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91%E6%8F%90%E5%89%8D%E6%89%B9%E9%9D%A2%E7%BB%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="mumon">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mumon's Blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/08/%E8%BD%AC%E8%BD%BD-%E5%AD%97%E8%8A%82%E8%B7%B3%E5%8A%A8%E5%B9%BF%E5%91%8A%E7%B3%BB%E7%BB%9F%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91%E6%8F%90%E5%89%8D%E6%89%B9%E9%9D%A2%E7%BB%8F/" class="post-title-link" itemprop="url">(转载)字节跳动广告系统后端开发提前批面经</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-08-08 01:20:53" itemprop="dateCreated datePublished" datetime="2020-08-08T01:20:53+08:00">2020-08-08</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-09 17:39:15" itemprop="dateModified" datetime="2020-08-09T17:39:15+08:00">2020-08-09</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/%E5%AD%97%E8%8A%82%E8%B7%B3%E5%8A%A8.jpg" alt="字节跳动"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/08/08/%E8%BD%AC%E8%BD%BD-%E5%AD%97%E8%8A%82%E8%B7%B3%E5%8A%A8%E5%B9%BF%E5%91%8A%E7%B3%BB%E7%BB%9F%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91%E6%8F%90%E5%89%8D%E6%89%B9%E9%9D%A2%E7%BB%8F/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/06/%E5%9F%BA%E4%BA%8EHexo-Next-Github-%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="mumon">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mumon's Blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/06/%E5%9F%BA%E4%BA%8EHexo-Next-Github-%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" class="post-title-link" itemprop="url">基于Hexo + Next + Github 搭建个人博客</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-08-06 02:08:38" itemprop="dateCreated datePublished" datetime="2020-08-06T02:08:38+08:00">2020-08-06</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-08 01:21:28" itemprop="dateModified" datetime="2020-08-08T01:21:28+08:00">2020-08-08</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/hexo-logo-avatar.png" alt="hexo-logo-avatar"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/08/06/%E5%9F%BA%E4%BA%8EHexo-Next-Github-%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
   
 
 
@@ -537,6 +278,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Shopee%E7%A7%8B%E6%8B%9B%E4%B8%80%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">Shopee秋招一面</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%8B%E6%92%95%E4%BB%A3%E7%A0%81"><span class="nav-number">1.1.</span> <span class="nav-text">手撕代码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#21-%E5%90%88%E5%B9%B6%E4%B8%A4%E4%B8%AA%E6%9C%89%E5%BA%8F%E9%93%BE%E8%A1%A8"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">21. 合并两个有序链表</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%A2%E8%AF%95%E5%86%85%E5%AE%B9"><span class="nav-number">1.2.</span> <span class="nav-text">面试内容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.2.1.</span> <span class="nav-text">数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#redis%E7%9A%84%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9F"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">redis的基础数据结构？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mysql%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%9C%89%E7%B4%A2%E5%BC%95%EF%BC%9F%E6%9C%89%E5%93%AA%E4%BA%9B%E7%B4%A2%E5%BC%95%EF%BC%9F"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">mysql为什么要有索引？有哪些索引？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%E5%92%8C%E9%9D%9E%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">聚簇索引和非聚簇索引的区别？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E4%BA%8B%E5%8A%A1%EF%BC%9F%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%9B%9B%E5%A4%A7%E7%89%B9%E6%80%A7%EF%BC%9F"><span class="nav-number">1.2.1.4.</span> <span class="nav-text">什么是事务？事务的四大特性？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%EF%BC%9F"><span class="nav-number">1.2.1.5.</span> <span class="nav-text">数据库的隔离级别？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB%EF%BC%9F"><span class="nav-number">1.2.1.6.</span> <span class="nav-text">什么是可重复读？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C"><span class="nav-number">1.2.2.</span> <span class="nav-text">计算机网络</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%B1%95%E7%A4%BA%EF%BC%8C%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%E6%B5%81%E7%A8%8B%EF%BC%9F"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">输入URL到页面展示，经历了什么流程？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%EF%BC%9F"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">TCP三次握手？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%B8%89%E6%AC%A1%E8%80%8C%E4%B8%8D%E6%98%AF%E4%B8%A4%E6%AC%A1%EF%BC%9F"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">为什么要三次而不是两次？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.2.3.</span> <span class="nav-text">操作系统</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">进程与线程的区别？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#java%E9%A1%B9%E7%9B%AE%E4%B8%AD%E6%98%AF%E4%B8%8D%E6%98%AF%E4%B8%80%E5%AE%9A%E6%9C%89%E7%BA%BF%E7%A8%8B%EF%BC%9F"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">java项目中是不是一定有线程？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux"><span class="nav-number">1.2.4.</span> <span class="nav-text">Linux</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Linux%E7%94%A8%E8%BF%87%E5%93%AA%E4%BA%9B%E5%91%BD%E4%BB%A4%EF%BC%9F"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">Linux用过哪些命令？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kill-9%E5%8F%AF%E8%83%BD%E4%BC%9A%E5%AF%BC%E8%87%B4%E5%93%AA%E4%BA%9B%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">kill -9可能会导致哪些问题？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E9%83%A8%E7%BD%B2%E9%A1%B9%E7%9B%AE%E5%90%8E%EF%BC%8C%E6%80%8E%E4%B9%88%E6%9F%A5%E7%9C%8B%E9%A1%B9%E7%9B%AE%E6%97%A5%E5%BF%97%EF%BC%9F"><span class="nav-number">1.2.4.3.</span> <span class="nav-text">在服务器上部署项目后，怎么查看项目日志？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Git"><span class="nav-number">1.2.5.</span> <span class="nav-text">Git</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%A0%E4%BB%AC%E5%9B%A2%E9%98%9F%E6%80%8E%E4%B9%88%E8%BF%9B%E8%A1%8C%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86%E7%9A%84%EF%BC%9F"><span class="nav-number">1.2.5.1.</span> <span class="nav-text">你们团队怎么进行版本管理的？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#git-rebase%E6%98%AF%E5%B9%B2%E4%BB%80%E4%B9%88%E7%9A%84%EF%BC%9F"><span class="nav-number">1.2.5.2.</span> <span class="nav-text">git rebase是干什么的？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#git-merge%E5%9C%A8%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E4%B8%8B%E4%BD%BF%E7%94%A8%E7%9A%84%EF%BC%9F"><span class="nav-number">1.2.5.3.</span> <span class="nav-text">git merge在什么情况下使用的？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java"><span class="nav-number">1.2.6.</span> <span class="nav-text">Java</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JVM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%EF%BC%9F"><span class="nav-number">1.2.6.1.</span> <span class="nav-text">JVM内存模型？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JDK-1-8%E4%B9%8B%E5%89%8D%E7%9A%84%E5%A0%86%E5%88%86%E5%8C%BA%EF%BC%9F%E6%96%B0%E6%97%B6%E4%BB%A3%EF%BC%8C%E8%80%81%E5%B9%B4%E4%BB%A3%EF%BC%9F"><span class="nav-number">1.2.6.2.</span> <span class="nav-text">JDK 1.8之前的堆分区？新时代，老年代？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GC%E7%9A%84%E6%B5%81%E7%A8%8B%EF%BC%9F"><span class="nav-number">1.2.6.3.</span> <span class="nav-text">GC的流程？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99GC%EF%BC%9F"><span class="nav-number">1.2.6.4.</span> <span class="nav-text">什么时候GC？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8%E6%96%B9%E6%B3%95%E6%A0%88%E4%B8%AD%E4%BC%9A%E5%8F%91%E7%94%9FGC%E4%B9%88%EF%BC%9F"><span class="nav-number">1.2.6.5.</span> <span class="nav-text">在方法栈中会发生GC么？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E5%AF%B9%E8%B1%A1%E6%98%AF%E5%90%A6%E6%AD%BB%E4%BA%A1%EF%BC%9F"><span class="nav-number">1.2.6.6.</span> <span class="nav-text">如何判断对象是否死亡？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JDK-1-8%E4%B9%8B%E5%90%8E%E7%9A%84GC%E6%9C%89%E4%BA%86%E8%A7%A3%E4%B9%88%EF%BC%9F"><span class="nav-number">1.2.6.7.</span> <span class="nav-text">JDK 1.8之后的GC有了解么？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker"><span class="nav-number">1.2.7.</span> <span class="nav-text">Docker</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Docker%E7%9A%84%E5%A5%BD%E5%A4%84%EF%BC%9F"><span class="nav-number">1.2.7.1.</span> <span class="nav-text">Docker的好处？</span></a></li></ol></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
