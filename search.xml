@@ -123,9 +123,6 @@
       <categories>
         <category>面经</category>
       </categories>
-      <tags>
-        <tag>面试</tag>
-      </tags>
   </entry>
   <entry>
     <title>Redis数据结构及使用场景</title>
@@ -913,8 +910,5 @@
       <categories>
         <category>面经</category>
       </categories>
-      <tags>
-        <tag>面试</tag>
-      </tags>
   </entry>
 </search>
