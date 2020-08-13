@@ -907,7 +907,7 @@
   <entry>
     <title>java基础概念</title>
     <url>/2020/08/13/Java/java-basic-knowledge/</url>
-    <content><![CDATA[<p><img src="https://my-blog-to-use.oss-cn-beijing.aliyuncs.com/Java%20%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B.png" alt="Java程序运行过程"></p>
+    <content><![CDATA[<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200814002005.png" alt="Java程序运行过程"></p>
 <!--  more -->
 
 <h2 id="JDK与JRE"><a href="#JDK与JRE" class="headerlink" title="JDK与JRE"></a>JDK与JRE</h2><p>JDK：是 Java Development Kit，它是功能齐全的 Java SDK。它拥有 JRE 所拥有的一切，还有编译器（javac）和工具（如 javadoc 和 jdb）。它能够创建和编译程序。</p>
