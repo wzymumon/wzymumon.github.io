@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="总结了最基础的几种数据结构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基础的数据结构">
+<meta property="og:url" content="http://yoursite.com/2020/08/18/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9F%BA%E7%A1%80%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:site_name" content="Mumon&#39;s Blogs">
+<meta property="og:description" content="总结了最基础的几种数据结构">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-08-17T16:26:29.000Z">
+<meta property="article:modified_time" content="2020-08-17T16:34:59.561Z">
+<meta property="article:author" content="mumon">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/08/18/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9F%BA%E7%A1%80%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>基础的数据结构 | Mumon's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Mumon's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/18/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9F%BA%E7%A1%80%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="mumon">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mumon's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基础的数据结构
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-08-18 00:26:29 / 修改时间：00:34:59" itemprop="dateCreated datePublished" datetime="2020-08-18T00:26:29+08:00">2020-08-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>总结了最基础的几种数据结构</p>
+<a id="more"></a>
+
+<h2 id="数组（Array）"><a href="#数组（Array）" class="headerlink" title="数组（Array）"></a>数组（Array）</h2><p><strong>数组</strong>（Array），是由相同类型的元素（element）的集合所组成的数据结构，分配一块连续的内存来存储。利用元素的索引（index）可以计算出该元素对应的存储地址。</p>
+<p>最简单的数据结构类型是<strong>一维数组</strong>。例如，索引为0到9的32位整数数组，可作为在存储器地址2000，2004，2008，…2036中，存储10个变量，因此索引为i的元素即在存储器中的2000+4×i地址。数组第一个元素的存储器地址称为第一地址或基础地址。</p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/%E6%95%B0%E7%BB%84">维基百科 —- 数组</a></p>
+<h2 id="链表（Linked-List）"><a href="#链表（Linked-List）" class="headerlink" title="链表（Linked List）"></a>链表（Linked List）</h2><p><strong>链表</strong>（Linked list）是一种常见的基础数据结构，是一种<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%BA%BF%E6%80%A7%E8%A1%A8">线性表</a>，但是并不会按线性的顺序存储数据，而是在每一个节点里存到下一个节点的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%8C%87%E6%A8%99_(%E9%9B%BB%E8%85%A6%E7%A7%91%E5%AD%B8)">指针</a>(Pointer)。由于不必须按顺序存储，链表在插入的时候可以达到O(1)的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A4%87%E9%9B%9C%E5%BA%A6">复杂度</a>，比另一种线性表<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%A1%BA%E5%BA%8F%E8%A1%A8">顺序表</a>快得多，但是查找一个节点或者访问特定编号的节点则需要O(n)的时间，而顺序表相应的时间复杂度分别是O(log n)和O(1)。</p>
+<p>使用链表结构可以克服数组链表需要预先知道数据大小的缺点，链表结构可以充分利用计算机内存空间，实现灵活的内存动态管理。但是链表失去了数组随机读取的优点，同时链表由于增加了结点的指针域，空间开销比较大。</p>
+<p>在计算机科学中，链表作为一种基础的数据结构可以用来生成其它类型的数据结构。链表通常由一连串节点组成，每个节点包含任意的实例数据（data fields）和一或两个用来指向上一个/或下一个节点的位置的链接（”links”）。链表最明显的好处就是，常规数组排列关联项目的方式可能不同于这些数据项目在记忆体或磁盘上顺序，数据的访问往往要在不同的排列顺序中转换。而链表是一种自我指示数据类型，因为它包含指向另一个相同类型的数据的指针（链接）。链表允许插入和移除表上任意位置上的节点，但是<strong>不允许随机存取</strong>。链表有很多种不同的类型：单向链表，双向链表以及循环链表。</p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/%E9%93%BE%E8%A1%A8">维基百科 —- 链表</a></p>
+<h2 id="栈（Stack）"><a href="#栈（Stack）" class="headerlink" title="栈（Stack）"></a>栈（Stack）</h2><p><strong>栈</strong>（Stack）又称为<strong>栈</strong>或<strong>堆叠</strong>，只允许在有序的线性资料集合的一端（称为栈顶，op）进行加入数据（push）和移除数据（pop）的运算。因而按照<strong>后进先出</strong>（LIFO, Last In First Out）的原理运作。</p>
+<p>常与另一种有序的线性资料集合队列相提并论。</p>
+<p>栈常用一维数组或链表来实现。</p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%A0%86%E6%A0%88">维基百科 —- 栈</a></p>
+<h2 id="队列（Queue）"><a href="#队列（Queue）" class="headerlink" title="队列（Queue）"></a>队列（Queue）</h2><p><strong>队列</strong>（Queue），队列只允许在后端（rear）进行插入操作，在前端（front）进行删除操作。是<strong>先进先出</strong>（FIFO, First-In-First-Out）的线性表。</p>
+<p>常与另一种有序的线性资料集合栈相提并论</p>
+<p>队列的操作方式和栈类似，唯一的区别在于队列只允许新数据在后端进行添加。</p>
+<p>队列常用一维数组或链表来实现。</p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%98%9F%E5%88%97">维基百科 —- 队列</a></p>
+<h2 id="树（Tree）"><a href="#树（Tree）" class="headerlink" title="树（Tree）"></a>树（Tree）</h2><p><strong>树</strong>（Tree）是一种<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%8A%BD%E8%B1%A1%E8%B3%87%E6%96%99%E5%9E%8B%E5%88%A5">抽象数据类型</a>（ADT）或是实现这种抽象数据类型的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%B3%87%E6%96%99%E7%B5%90%E6%A7%8B">数据结构</a>，用来模拟具<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%A8%B9%E7%8B%80%E7%B5%90%E6%A7%8B">有树状结构</a>性质的数据集合。它是由n（n&gt;0）个有限节点组成一个具有层次关系的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%9B%86%E5%90%88">集合</a>。把它叫做“树”是因为它看起来像一棵倒挂的树，也就是说它是根朝上，而叶朝下的。它具有以下的特点：</p>
+<ul>
+<li>每个节点都只有有限个子节点或无子节点；</li>
+<li>没有父节点的节点称为根节点；</li>
+<li>每一个非根节点有且只有一个父节点；</li>
+<li>除了根节点外，每个子节点可以分为多个不相交的子树；</li>
+<li>树里面没有环路(cycle)</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/%E6%A0%91_(%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84)">维基百科 —- 树</a></p>
+<h2 id="图（Graph）"><a href="#图（Graph）" class="headerlink" title="图（Graph）"></a>图（Graph）</h2><p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/%E5%9B%BE_(%E6%95%B0%E5%AD%A6)">维基百科 —- 图</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.im/post/5b5bb171f265da0f5d4cdf33">初学者应该了解的数据结构： Graph</a></p>
+<h2 id="堆（Heap）"><a href="#堆（Heap）" class="headerlink" title="堆（Heap）"></a>堆（Heap）</h2><p><strong>堆</strong>（Heap）是<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6">计算机科学</a>中的一种特别的树状<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">数据结构</a>。若是满足以下特性，即可称为堆：“给定堆中任意<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%AF%80%E9%BB%9E">节点</a>P和C，若P是C的母节点，那么P的值会小于等于（或大于等于）C的值”。若母节点的值恒<strong>小于等于</strong>子节点的值，此堆称为<strong>最小堆</strong>（min heap）；反之，若母节点的值恒<strong>大于等于</strong>子节点的值，此堆称为<strong>最大堆</strong>（max heap）。在堆中最顶端的那一个节点，称作<strong>根节点</strong>（root node），根节点本身没有<strong>母节点</strong>（parent node）。</p>
+<p>堆始于<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/w/index.php?title=J._W._J._Williams&action=edit&redlink=1">J. W. J. Williams</a>在1964年发表的<strong>堆排序</strong>（heap sort），当时他提出了二叉堆树作为此算法的数据结构。堆在<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%88%B4%E5%85%8B%E6%96%AF%E7%89%B9%E6%8B%89%E7%AE%97%E6%B3%95">戴克斯特拉算法</a>（Dijkstra’s algorithm）中亦为重要的关键。</p>
+<p>在<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%98%9F%E5%88%97">队列</a>中，调度程序反复提取队列中第一个作业并运行，因为实际情况中某些时间较短的任务将等待很长时间才能结束，或者某些不短小，但具有重要性的作业，同样应当具有优先权。堆即为解决此类问题设计的一种数据结构。</p>
+<p><a href="%5Bhttps://zh.wikipedia.org/zh-cn/%E5%A0%86%E7%A9%8D%5D(https://zh.wikipedia.org/zh-cn/%E5%A0%86%E7%A9%8D)">维基百科 —- 堆</a></p>
+<h2 id="哈希表（Hash-Table）"><a href="#哈希表（Hash-Table）" class="headerlink" title="哈希表（Hash Table）"></a>哈希表（Hash Table）</h2><p><strong>哈希表</strong>（Hash table，也叫散列表），是根据<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%8D%B5">键</a>（Key）而直接访问在記憶體儲存位置的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">数据结构</a>。也就是说，它通过计算一个关于键值的函数，将所需查询的数据<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%98%A0%E5%B0%84">映射</a>到表中一个位置来访问记录，这加快了查找速度。这个映射函数称做**<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B0">散列函数</a>**，存放记录的数组称做散列表。</p>
+<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><ul>
+<li><p>若关键字为 k，则其值存放在 <em>f(k)</em> 的存储位置上。由此，不需比较便可直接取得所查记录。称这个对应关系_f_为<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B0">散列函数</a>，按这个思想建立的表为<strong>散列表</strong>。</p>
+</li>
+<li><p>对不同的关键字可能得到同一散列地址，即 <em>k{1} != k{2}_，而_f(k{1}) = f(k{2})_，这种现象称为冲突（Collision）。具有相同函数值的关键字对该散列函数来说称做同义词。综上所述，根据散列函数 _f(k)</em> 和处理冲突的方法将一组关键字映射到一个有限的连续的地址集（区间）上，并以关键字在地址集中的“<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%83%8F_(%E6%95%B8%E5%AD%B8)">像</a>”作为记录在表中的存储位置，这种表便称为<strong>散列表</strong>，这一映射过程称为<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97">散列造表</a>或<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97">散列</a>，所得的存储位置称<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/w/index.php?title=%E6%95%A3%E5%88%97%E5%9C%B0%E5%9D%80&action=edit&redlink=1">散列地址</a>。</p>
+</li>
+<li><p>若对于关键字集合中的任一个关键字，经散列函数映象到地址集合中任何一个地址的概率是相等的，则称此类散列函数为<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/w/index.php?title=%E5%9D%87%E5%8C%80%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B0&action=edit&redlink=1">均匀散列函数</a>（Uniform Hash function），这就使关键字经过散列函数得到一个“随机的地址”，从而减少冲突。</p>
+</li>
+</ul>
+<p><a href="">维基百科 —- 哈希表</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/18/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="prev" title="设计模式">
+      <i class="fa fa-chevron-left"></i> 设计模式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/08/18/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/Least-Recently-Used-LRU-Page-Replacement-algorithm/" rel="next" title="LRU缓存机制">
+      LRU缓存机制 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%EF%BC%88Array%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">数组（Array）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8%EF%BC%88Linked-List%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">链表（Linked List）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%88%EF%BC%88Stack%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">栈（Stack）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%9F%E5%88%97%EF%BC%88Queue%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">队列（Queue）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%91%EF%BC%88Tree%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">树（Tree）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%EF%BC%88Graph%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">图（Graph）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A0%86%EF%BC%88Heap%EF%BC%89"><span class="nav-number">7.</span> <span class="nav-text">堆（Heap）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%88Hash-Table%EF%BC%89"><span class="nav-number">8.</span> <span class="nav-text">哈希表（Hash Table）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">8.1.</span> <span class="nav-text">基本概念</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="mumon"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">mumon</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wzymumon" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wzymumon" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wzyubill1104@gmail.com" title="E-Mail → mailto:wzyubill1104@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mumon</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

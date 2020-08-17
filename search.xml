@@ -1213,4 +1213,207 @@
         <tag>java</tag>
       </tags>
   </entry>
+  <entry>
+    <title>JVM内存模型</title>
+    <url>/2020/08/17/Java/JVM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/</url>
+    <content><![CDATA[<p>Java 虚拟机在执行 Java 程序的过程中会把它管理的内存划分成若干个不同的数据区域。JDK. 1.8 和之前的版本略有不同。</p>
+<a id="more"></a>
+
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>Java 程序员把内存控制权利交给 Java 虚拟机</p>
+<p>Java 虚拟机在执行 Java 程序的过程中会把它管理的内存划分成若干个不同的数据区域。JDK. 1.8 和之前的版本略有不同。</p>
+<p><strong>JDK 1.8 之前：</strong></p>
+<p><img src="https://snailclimb.gitee.io/javaguide/docs/java/jvm/pictures/java%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F/JVM%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F.png" alt="img"></p>
+<p><strong>JDK 1.8 ：</strong></p>
+<p><img src="https://snailclimb.gitee.io/javaguide/docs/java/jvm/pictures/java%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F/2019-3Java%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9FJDK1.8.png" alt="img"></p>
+<h1 id="运行时数据区域"><a href="#运行时数据区域" class="headerlink" title="运行时数据区域"></a>运行时数据区域</h1><p>Java虚拟机在执行Java程序的过程中，会把它所管理的内存划分为若干个不同的数据区域。这些区域都有各自的用途，以及创建和销毁的时间，有的区域随着虚拟机进程的启动而存在，有些区域则依赖于用户线程的启动和结束而创建和销毁。</p>
+<h2 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h2><p>程序计数器是一块较小的内存空间，可以看作是<strong>当前线程所执行的字节码的行号指示器</strong>。字节码解释器工作时通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转、异常处理、线程恢复等功能都需要依赖这个计数器来完成。</p>
+<p>另外，为了线程切换后能恢复到正确的执行位置，<strong>每条线程都需要有一个独立的程序计数器，各线程之间计数器互不影响，独立存储</strong>，我们称这类内存区域为“线程私有”的内存。</p>
+<p>如果线程执行的是java方法，这个计数器记录的是正在执行的虚拟机字节码的指令地址，如果正在执行的是native方法，这个计数器则为空（Undefined）。</p>
+<p>程序计数器是唯一一个在Java虚拟机规范中，没有规定任何 OutOfMemoryError情况的内存区域，它的生命周期随着线程的创建而创建，随着线程的结束而死亡。</p>
+<p>程序计数器的主要作用：</p>
+<ol>
+<li><strong>字节码解释器通过改变程序计数器来依次读取指令，从而实现代码的流程控制</strong>，如：顺序执行、选择、循环、异常处理。</li>
+<li>在多线程的情况下，<strong>程序计数器用于记录当前线程执行的位置</strong>，从而当线程被切换回来的时候能够知道该线程上次运行到哪儿了。</li>
+</ol>
+<h2 id="Java虚拟机栈"><a href="#Java虚拟机栈" class="headerlink" title="Java虚拟机栈"></a>Java虚拟机栈</h2><p>与程序计数器一样，Java 虚拟机栈也是<strong>线程私有</strong>的，它的生命周期和线程相同，描述的是 Java 方法执行的内存模型。每个方法在执行的同时都会创建一个栈帧（Stack Frame）用于存放局部变量表、操作数栈、动态链接、方法出口等信息。</p>
+<p><strong>局部变量表主要存放了编译期可知的各种数据类型</strong>（boolean、byte、char、short、int、float、long、double）、<strong>对象引用</strong>（reference 类型，它不同于对象本身，可能是一个指向对象起始地址的引用指针，也可能是指向一个代表对象的句柄或其他与此对象相关的位置）和returnAddress类型（指向一条字节码指令的地址）。</p>
+<p>Java 虚拟机栈会出现两种f错误：StackOverflowError 和 OutOfMemoryError。</p>
+<ul>
+<li><code>StackOverflowError</code>： 若 Java 虚拟机栈的内存大小不允许动态扩展，那么当线程请求栈的深度超过当前 Java 虚拟机栈的最大深度的时候，就抛出 StackOverflowError 错误。</li>
+<li><code>OutOfMemoryError</code>： 若 Java 虚拟机堆中没有空闲内存，并且垃圾回收器也无法提供更多内存的话。就会抛出 OutOfMemoryError 错误。</li>
+</ul>
+<p>虚拟机栈的主要作用：</p>
+<ul>
+<li>描述的是 Java 方法执行的内存模型。每个方法在执行的同时都会创建一个栈帧（Stack Frame）用于<strong>存放局部变量表、操作数栈、动态链接、方法出口等信息</strong>。</li>
+</ul>
+<p><strong>扩展：那么方法/函数如何调用？</strong></p>
+<p>Java 栈可用类比数据结构中栈，Java 栈中保存的主要内容是栈帧，每一次函数调用都会有一个对应的栈帧被压入 Java 栈，每一个函数调用结束后，都会有一个栈帧被弹出。</p>
+<p>Java 方法有两种返回方式：</p>
+<ol>
+<li>return 语句。</li>
+<li>抛出异常。</li>
+</ol>
+<p>不管哪种返回方式都会导致栈帧被弹出。</p>
+<h2 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p>和虚拟机栈所发挥的作用非常相似，区别是： <strong>虚拟机栈为虚拟机执行 Java 方法 （也就是字节码）服务，而本地方法栈则为虚拟机使用到的 Native 方法服务。</strong> 在 HotSpot 虚拟机中和 Java 虚拟机栈合二为一。</p>
+<p>本地方法被执行的时候，在本地方法栈也会创建一个栈帧，用于存放该本地方法的局部变量表、操作数栈、动态链接、出口信息。</p>
+<p>与虚拟机栈一样，本地方法栈也会抛出StackOverflowError 和 OutOfMemoryError异常。</p>
+<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>Java 虚拟机所管理的内存中最大的一块，Java 堆是所有<strong>线程共享</strong>的一块内存区域，在虚拟机启动时创建。此内存区域的唯一目的就是<strong>存放对象实例</strong>，几乎所有的对象实例以及数组都在这里分配内存。</p>
+<p>Java 堆是垃圾收集器管理的主要区域，因此也被称作<strong>GC 堆（Garbage Collected Heap）</strong>.从垃圾回收的角度，由于现在收集器基本都采用分代收集算法，所以 Java 堆还可以细分为：新生代和老年代：再细致一点有：Eden 空间、From Survivor、To Survivor 空间等。<strong>进一步划分的目的是更好地回收内存，或者更快地分配内存。</strong></p>
+<p>根据Java虚拟机规范，堆可以处于物理上不连续的内存空间中，只要逻辑上是连续的即可。</p>
+<p>如果在堆中没有内存实现实例分配，并且堆也无法再扩展时，将会抛出OutOfMemoryError异常。</p>
+<p>堆这里最容易出现的就是 OutOfMemoryError 错误，并且出现这种错误之后的表现形式还会有几种，比如：</p>
+<ol>
+<li><p>OutOfMemoryError: GC Overhead Limit Exceeded ： 当JVM花太多时间执行垃圾回收并且只能回收很少的堆空间时，就会发生此错误。</p>
+</li>
+<li><p>java.lang.OutOfMemoryError: Java heap space :假如在创建新的对象时, 堆内存中的空间不足以存放新创建的对象, </p>
+<p>就会引发java.lang.OutOfMemoryError: Java heap space 错误。(和本机物理内存无关，和你配置的内存大小有关！)</p>
+</li>
+<li><p>……</p>
+</li>
+</ol>
+<blockquote>
+<p>当为HotSpot虚拟机时，在 JDK 7 版本及JDK 7 版本之前，堆内存被通常被分为下面三部分：</p>
+<ol>
+<li>新生代内存(Young Generation)</li>
+<li>老生代(Old Generation)</li>
+<li>永生代(Permanent Generation)</li>
+</ol>
+<p><img src="https://snailclimb.gitee.io/javaguide/docs/java/jvm/pictures/java%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F/JVM%E5%A0%86%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84-JDK7.png" alt="JVM堆内存结构-JDK7"></p>
+<p>JDK 8 版本之后方法区（HotSpot 的永久代）被彻底移除了（JDK1.7时，已将原本放在永久代的字符串常量移出），取而代之是元空间，元空间使用的是直接内存。</p>
+<p><img src="https://snailclimb.gitee.io/javaguide/docs/java/jvm/pictures/java%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F/JVM%E5%A0%86%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84-jdk8.png" alt="JVM堆内存结构-JDK8"></p>
+<p>上图所示的 Eden 区、两个 Survivor 区都属于新生代（为了区分，这两个 Survivor 区域按照顺序被命名为 from 和 to），中间一层属于老年代。</p>
+</blockquote>
+<h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><p>方法区与 Java 堆一样，是各个线程共享的内存区域，它用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。虽然 <strong>Java 虚拟机规范把方法区描述为堆的一个逻辑部分</strong>，但是它却有一个别名叫做 <strong>Non-Heap（非堆）</strong>，目的应该是与 Java 堆区分开来。</p>
+<blockquote>
+<p>《Java 虚拟机规范》只是规定了有方法区这么个概念和它的作用，并没有规定如何去实现它。那么，在不同的 JVM 上方法区的实现肯定是不同的了。 <strong>方法区和永久代的关系很像 Java 中接口和类的关系，类实现了接口，而永久代就是 HotSpot 虚拟机对虚拟机规范中方法区的一种实现方式。</strong> 也就是说，永久代是 HotSpot 的概念，方法区是 Java 虚拟机规范中的定义，是一种规范，而永久代是一种实现，一个是标准一个是实现，其他的虚拟机实现并没有永久代这一说法。</p>
+</blockquote>
+<p>JDK 1.8 的时候，方法区（HotSpot 的永久代）被彻底移除了，取而代之是元空间，元空间使用的是直接内存。</p>
+<p><strong>为什么要将永久代 (PermGen) 替换为元空间 (MetaSpace) 呢?</strong></p>
+<ol>
+<li>整个永久代有一个 JVM 本身设置固定大小上限MaxPermSize，无法进行调整，而元空间使用的是直接内存，受本机可用内存的限制，虽然元空间仍旧可能溢出，但是比原来出现的几率会更小。</li>
+<li>元空间里面存放的是类的元数据，这样加载多少类的元数据就不由 MaxPermSize 控制了, 而由系统的实际可用空间来控制，这样能加载的类就更多了。</li>
+<li>在 JDK 8，合并 HotSpot 和 JRockit 的代码时，JRockit 从来没有一个叫永久代的东西， 合并之后就没有必要额外的设置这么一个永久代的地方了。</li>
+</ol>
+<h2 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h2><p>运行时常量池是方法区的一部分。Class 文件中除了有类的版本、字段、方法、接口等描述信息外，还有常量池表（用于存放编译期生成的各种字面量和符号引用）</p>
+<p>既然运行时常量池是方法区的一部分，自然受到方法区内存的限制，当常量池无法再申请到内存时会抛出 OutOfMemoryError 错误。</p>
+<blockquote>
+<ol>
+<li>JDK1.7之前运行时常量池逻辑包含字符串常量池存放在方法区, 此时hotspot虚拟机对方法区的实现为永久代</li>
+<li>JDK1.7 字符串常量池被从方法区拿到了堆中, 这里没有提到运行时常量池,也就是说字符串常量池被单独拿到堆,运行时常量池剩下的东西还在方法区, 也就是hotspot中的永久代 。</li>
+<li>JDK1.8 hotspot移除了永久代用元空间(Metaspace)取而代之, 这时候字符串常量池还在堆, 运行时常量池还在方法区, 只不过方法区的实现从永久代变成了元空间(Metaspace)</li>
+</ol>
+</blockquote>
+<h2 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h2><p><strong>直接内存并不是虚拟机运行时数据区的一部分，也不是虚拟机规范中定义的内存区域，但是这部分内存也被频繁地使用。而且也可能导致 OutOfMemoryError 错误出现。</strong></p>
+<p>JDK1.4 中新加入的 <strong>NIO(New Input/Output) 类</strong>，引入了一种基于<strong>通道（Channel）</strong> 与<strong>缓存区（Buffer）</strong> 的 I/O 方式，它可以直接使用 Native 函数库直接分配堆外内存，然后通过一个存储在 Java 堆中的 DirectByteBuffer 对象作为这块内存的引用进行操作。这样就能在一些场景中显著提高性能，因为<strong>避免了在 Java 堆和 Native 堆之间来回复制数据</strong>。</p>
+<p>本机直接内存的分配不会受到 Java 堆的限制，但是，既然是内存就会受到本机总内存大小以及处理器寻址空间的限制。</p>
+]]></content>
+      <categories>
+        <category>java</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>JVM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>基础的数据结构</title>
+    <url>/2020/08/18/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%9F%BA%E7%A1%80%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</url>
+    <content><![CDATA[<p>总结了最基础的几种数据结构</p>
+<a id="more"></a>
+
+<h2 id="数组（Array）"><a href="#数组（Array）" class="headerlink" title="数组（Array）"></a>数组（Array）</h2><p><strong>数组</strong>（Array），是由相同类型的元素（element）的集合所组成的数据结构，分配一块连续的内存来存储。利用元素的索引（index）可以计算出该元素对应的存储地址。</p>
+<p>最简单的数据结构类型是<strong>一维数组</strong>。例如，索引为0到9的32位整数数组，可作为在存储器地址2000，2004，2008，…2036中，存储10个变量，因此索引为i的元素即在存储器中的2000+4×i地址。数组第一个元素的存储器地址称为第一地址或基础地址。</p>
+<p><a href="https://zh.wikipedia.org/zh-cn/%E6%95%B0%E7%BB%84">维基百科 —- 数组</a></p>
+<h2 id="链表（Linked-List）"><a href="#链表（Linked-List）" class="headerlink" title="链表（Linked List）"></a>链表（Linked List）</h2><p><strong>链表</strong>（Linked list）是一种常见的基础数据结构，是一种<a href="https://zh.wikipedia.org/wiki/%E7%BA%BF%E6%80%A7%E8%A1%A8">线性表</a>，但是并不会按线性的顺序存储数据，而是在每一个节点里存到下一个节点的<a href="https://zh.wikipedia.org/wiki/%E6%8C%87%E6%A8%99_(%E9%9B%BB%E8%85%A6%E7%A7%91%E5%AD%B8)">指针</a>(Pointer)。由于不必须按顺序存储，链表在插入的时候可以达到O(1)的<a href="https://zh.wikipedia.org/wiki/%E8%A4%87%E9%9B%9C%E5%BA%A6">复杂度</a>，比另一种线性表<a href="https://zh.wikipedia.org/wiki/%E9%A1%BA%E5%BA%8F%E8%A1%A8">顺序表</a>快得多，但是查找一个节点或者访问特定编号的节点则需要O(n)的时间，而顺序表相应的时间复杂度分别是O(log n)和O(1)。</p>
+<p>使用链表结构可以克服数组链表需要预先知道数据大小的缺点，链表结构可以充分利用计算机内存空间，实现灵活的内存动态管理。但是链表失去了数组随机读取的优点，同时链表由于增加了结点的指针域，空间开销比较大。</p>
+<p>在计算机科学中，链表作为一种基础的数据结构可以用来生成其它类型的数据结构。链表通常由一连串节点组成，每个节点包含任意的实例数据（data fields）和一或两个用来指向上一个/或下一个节点的位置的链接（”links”）。链表最明显的好处就是，常规数组排列关联项目的方式可能不同于这些数据项目在记忆体或磁盘上顺序，数据的访问往往要在不同的排列顺序中转换。而链表是一种自我指示数据类型，因为它包含指向另一个相同类型的数据的指针（链接）。链表允许插入和移除表上任意位置上的节点，但是<strong>不允许随机存取</strong>。链表有很多种不同的类型：单向链表，双向链表以及循环链表。</p>
+<p><a href="https://zh.wikipedia.org/zh-cn/%E9%93%BE%E8%A1%A8">维基百科 —- 链表</a></p>
+<h2 id="栈（Stack）"><a href="#栈（Stack）" class="headerlink" title="栈（Stack）"></a>栈（Stack）</h2><p><strong>栈</strong>（Stack）又称为<strong>栈</strong>或<strong>堆叠</strong>，只允许在有序的线性资料集合的一端（称为栈顶，op）进行加入数据（push）和移除数据（pop）的运算。因而按照<strong>后进先出</strong>（LIFO, Last In First Out）的原理运作。</p>
+<p>常与另一种有序的线性资料集合队列相提并论。</p>
+<p>栈常用一维数组或链表来实现。</p>
+<p><a href="https://zh.wikipedia.org/wiki/%E5%A0%86%E6%A0%88">维基百科 —- 栈</a></p>
+<h2 id="队列（Queue）"><a href="#队列（Queue）" class="headerlink" title="队列（Queue）"></a>队列（Queue）</h2><p><strong>队列</strong>（Queue），队列只允许在后端（rear）进行插入操作，在前端（front）进行删除操作。是<strong>先进先出</strong>（FIFO, First-In-First-Out）的线性表。</p>
+<p>常与另一种有序的线性资料集合栈相提并论</p>
+<p>队列的操作方式和栈类似，唯一的区别在于队列只允许新数据在后端进行添加。</p>
+<p>队列常用一维数组或链表来实现。</p>
+<p><a href="https://zh.wikipedia.org/wiki/%E9%98%9F%E5%88%97">维基百科 —- 队列</a></p>
+<h2 id="树（Tree）"><a href="#树（Tree）" class="headerlink" title="树（Tree）"></a>树（Tree）</h2><p><strong>树</strong>（Tree）是一种<a href="https://zh.wikipedia.org/wiki/%E6%8A%BD%E8%B1%A1%E8%B3%87%E6%96%99%E5%9E%8B%E5%88%A5">抽象数据类型</a>（ADT）或是实现这种抽象数据类型的<a href="https://zh.wikipedia.org/wiki/%E8%B3%87%E6%96%99%E7%B5%90%E6%A7%8B">数据结构</a>，用来模拟具<a href="https://zh.wikipedia.org/wiki/%E6%A8%B9%E7%8B%80%E7%B5%90%E6%A7%8B">有树状结构</a>性质的数据集合。它是由n（n&gt;0）个有限节点组成一个具有层次关系的<a href="https://zh.wikipedia.org/wiki/%E9%9B%86%E5%90%88">集合</a>。把它叫做“树”是因为它看起来像一棵倒挂的树，也就是说它是根朝上，而叶朝下的。它具有以下的特点：</p>
+<ul>
+<li>每个节点都只有有限个子节点或无子节点；</li>
+<li>没有父节点的节点称为根节点；</li>
+<li>每一个非根节点有且只有一个父节点；</li>
+<li>除了根节点外，每个子节点可以分为多个不相交的子树；</li>
+<li>树里面没有环路(cycle)</li>
+</ul>
+<p><a href="https://zh.wikipedia.org/zh-cn/%E6%A0%91_(%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84)">维基百科 —- 树</a></p>
+<h2 id="图（Graph）"><a href="#图（Graph）" class="headerlink" title="图（Graph）"></a>图（Graph）</h2><p><a href="https://zh.wikipedia.org/zh-cn/%E5%9B%BE_(%E6%95%B0%E5%AD%A6)">维基百科 —- 图</a></p>
+<p><a href="https://juejin.im/post/5b5bb171f265da0f5d4cdf33">初学者应该了解的数据结构： Graph</a></p>
+<h2 id="堆（Heap）"><a href="#堆（Heap）" class="headerlink" title="堆（Heap）"></a>堆（Heap）</h2><p><strong>堆</strong>（Heap）是<a href="https://zh.wikipedia.org/wiki/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6">计算机科学</a>中的一种特别的树状<a href="https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">数据结构</a>。若是满足以下特性，即可称为堆：“给定堆中任意<a href="https://zh.wikipedia.org/wiki/%E7%AF%80%E9%BB%9E">节点</a>P和C，若P是C的母节点，那么P的值会小于等于（或大于等于）C的值”。若母节点的值恒<strong>小于等于</strong>子节点的值，此堆称为<strong>最小堆</strong>（min heap）；反之，若母节点的值恒<strong>大于等于</strong>子节点的值，此堆称为<strong>最大堆</strong>（max heap）。在堆中最顶端的那一个节点，称作<strong>根节点</strong>（root node），根节点本身没有<strong>母节点</strong>（parent node）。</p>
+<p>堆始于<a href="https://zh.wikipedia.org/w/index.php?title=J._W._J._Williams&action=edit&redlink=1">J. W. J. Williams</a>在1964年发表的<strong>堆排序</strong>（heap sort），当时他提出了二叉堆树作为此算法的数据结构。堆在<a href="https://zh.wikipedia.org/wiki/%E6%88%B4%E5%85%8B%E6%96%AF%E7%89%B9%E6%8B%89%E7%AE%97%E6%B3%95">戴克斯特拉算法</a>（Dijkstra’s algorithm）中亦为重要的关键。</p>
+<p>在<a href="https://zh.wikipedia.org/wiki/%E9%98%9F%E5%88%97">队列</a>中，调度程序反复提取队列中第一个作业并运行，因为实际情况中某些时间较短的任务将等待很长时间才能结束，或者某些不短小，但具有重要性的作业，同样应当具有优先权。堆即为解决此类问题设计的一种数据结构。</p>
+<p><a href="%5Bhttps://zh.wikipedia.org/zh-cn/%E5%A0%86%E7%A9%8D%5D(https://zh.wikipedia.org/zh-cn/%E5%A0%86%E7%A9%8D)">维基百科 —- 堆</a></p>
+<h2 id="哈希表（Hash-Table）"><a href="#哈希表（Hash-Table）" class="headerlink" title="哈希表（Hash Table）"></a>哈希表（Hash Table）</h2><p><strong>哈希表</strong>（Hash table，也叫散列表），是根据<a href="https://zh.wikipedia.org/wiki/%E9%8D%B5">键</a>（Key）而直接访问在記憶體儲存位置的<a href="https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">数据结构</a>。也就是说，它通过计算一个关于键值的函数，将所需查询的数据<a href="https://zh.wikipedia.org/wiki/%E6%98%A0%E5%B0%84">映射</a>到表中一个位置来访问记录，这加快了查找速度。这个映射函数称做**<a href="https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B0">散列函数</a>**，存放记录的数组称做散列表。</p>
+<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><ul>
+<li><p>若关键字为 k，则其值存放在 <em>f(k)</em> 的存储位置上。由此，不需比较便可直接取得所查记录。称这个对应关系_f_为<a href="https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B0">散列函数</a>，按这个思想建立的表为<strong>散列表</strong>。</p>
+</li>
+<li><p>对不同的关键字可能得到同一散列地址，即 <em>k{1} != k{2}_，而_f(k{1}) = f(k{2})_，这种现象称为冲突（Collision）。具有相同函数值的关键字对该散列函数来说称做同义词。综上所述，根据散列函数 _f(k)</em> 和处理冲突的方法将一组关键字映射到一个有限的连续的地址集（区间）上，并以关键字在地址集中的“<a href="https://zh.wikipedia.org/wiki/%E5%83%8F_(%E6%95%B8%E5%AD%B8)">像</a>”作为记录在表中的存储位置，这种表便称为<strong>散列表</strong>，这一映射过程称为<a href="https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97">散列造表</a>或<a href="https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97">散列</a>，所得的存储位置称<a href="https://zh.wikipedia.org/w/index.php?title=%E6%95%A3%E5%88%97%E5%9C%B0%E5%9D%80&action=edit&redlink=1">散列地址</a>。</p>
+</li>
+<li><p>若对于关键字集合中的任一个关键字，经散列函数映象到地址集合中任何一个地址的概率是相等的，则称此类散列函数为<a href="https://zh.wikipedia.org/w/index.php?title=%E5%9D%87%E5%8C%80%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B0&action=edit&redlink=1">均匀散列函数</a>（Uniform Hash function），这就使关键字经过散列函数得到一个“随机的地址”，从而减少冲突。</p>
+</li>
+</ul>
+<p><a href="">维基百科 —- 哈希表</a></p>
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LRU缓存机制</title>
+    <url>/2020/08/18/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/Least-Recently-Used-LRU-Page-Replacement-algorithm/</url>
+    <content><![CDATA[<p>LRU是Least Recently Used的缩写，即最近最少使用，是一种常用的页面置换算法，选择最近最久未使用的页面予以淘汰。</p>
+<a id="more"></a>
+
+<h2 id="LRU缓存机制"><a href="#LRU缓存机制" class="headerlink" title="LRU缓存机制"></a>LRU缓存机制</h2><h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>LRU是Least Recently Used的缩写，即最近最少使用，是一种常用的<a href="https://baike.baidu.com/item/%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95/7626091">页面置换算法</a>，选择最近最久未使用的页面予以淘汰。该算法赋予每个<a href="https://baike.baidu.com/item/%E9%A1%B5%E9%9D%A2/5544813">页面</a>一个访问字段，用来记录一个页面自上次被访问以来所经历的时间 t，当须淘汰一个页面时，选择现有页面中其 t 值最大的，即最近最少使用的页面予以淘汰。</p>
+<h3 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h3><p>LRU 缓存机制可以通过哈希表辅以双向链表实现，我们用一个哈希表和一个双向链表维护所有在缓存中的键值对。</p>
+<ul>
+<li><p>双向链表按照被使用的顺序存储了这些键值对，<strong>靠近头部的键值对是最近使用的，而靠近尾部的键值对是最久未使用的</strong>。</p>
+</li>
+<li><p>哈希表即为普通的哈希映射（HashMap），通过<strong>缓存数据的键映射到其在双向链表中的位置</strong>。</p>
+</li>
+</ul>
+<p>这样以来，我们首先使用哈希表进行定位，找出缓存项在双向链表中的位置，随后将其移动到双向链表的头部，即可在 O(1) 的时间内完成 get 或者 put 操作。具体的方法如下：</p>
+<ul>
+<li><p>对于 get 操作，首先判断 key 是否存在：</p>
+<ul>
+<li>如果 key 不存在，则返回 −1；</li>
+<li>如果 key 存在，则 key 对应的节点是最近被使用的节点。通过哈希表定位到该节点在双向链表中的位置，并将其移动到双向链表的头部，最后返回该节点的值。</li>
+</ul>
+</li>
+<li><p>对于 put 操作，首先判断 key 是否存在：</p>
+<ul>
+<li>如果 key 不存在，使用 key 和 value 创建一个新的节点，在双向链表的头部添加该节点，并将 key 和该节点添加进哈希表中。然后判断双向链表的节点数是否超出容量，如果超出容量，则删除双向链表的尾部节点，并删除哈希表中对应的项；</li>
+<li>如果 key 存在，则与 get 操作类似，先通过哈希表定位，再将对应的节点的值更新为 value，并将该节点移到双向链表的头部。</li>
+</ul>
+</li>
+</ul>
+<p>上述各项操作中，访问哈希表的时间复杂度为 O(1)，在双向链表的头部添加节点、在双向链表的尾部删除节点的复杂度也为 O(1)。而将一个节点移到双向链表的头部，可以分成「删除该节点」和「在双向链表的头部添加节点」两步操作，都可以在 O(1) 时间内完成。</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LRUCache</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">DLinkedNode</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> key;</span><br><span class="line">        <span class="keyword">int</span> value;</span><br><span class="line">        DLinkedNode prev;</span><br><span class="line">        DLinkedNode next;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">DLinkedNode</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">DLinkedNode</span><span class="params">(<span class="keyword">int</span> _key, <span class="keyword">int</span> _value)</span> </span>&#123;key = _key; value = _value;&#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Map&lt;Integer, DLinkedNode&gt; cache = <span class="keyword">new</span> HashMap&lt;Integer, DLinkedNode&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> size;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> capacity;</span><br><span class="line">    <span class="keyword">private</span> DLinkedNode head, tail;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LRUCache</span><span class="params">(<span class="keyword">int</span> capacity)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.size = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">this</span>.capacity = capacity;</span><br><span class="line">        <span class="comment">// 使用伪头部和伪尾部节点</span></span><br><span class="line">        head = <span class="keyword">new</span> DLinkedNode();</span><br><span class="line">        tail = <span class="keyword">new</span> DLinkedNode();</span><br><span class="line">        head.next = tail;</span><br><span class="line">        tail.prev = head;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">get</span><span class="params">(<span class="keyword">int</span> key)</span> </span>&#123;</span><br><span class="line">        DLinkedNode node = cache.get(key);</span><br><span class="line">        <span class="keyword">if</span> (node == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 如果 key 存在，先通过哈希表定位，再移到头部</span></span><br><span class="line">        moveToHead(node);</span><br><span class="line">        <span class="keyword">return</span> node.value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">int</span> key, <span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">        DLinkedNode node = cache.get(key);</span><br><span class="line">        <span class="keyword">if</span> (node == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 如果 key 不存在，创建一个新的节点</span></span><br><span class="line">            DLinkedNode newNode = <span class="keyword">new</span> DLinkedNode(key, value);</span><br><span class="line">            <span class="comment">// 添加进哈希表</span></span><br><span class="line">            cache.put(key, newNode);</span><br><span class="line">            <span class="comment">// 添加至双向链表的头部</span></span><br><span class="line">            addToHead(newNode);</span><br><span class="line">            ++size;</span><br><span class="line">            <span class="keyword">if</span> (size &gt; capacity) &#123;</span><br><span class="line">                <span class="comment">// 如果超出容量，删除双向链表的尾部节点</span></span><br><span class="line">                DLinkedNode tail = removeTail();</span><br><span class="line">                <span class="comment">// 删除哈希表中对应的项</span></span><br><span class="line">                cache.remove(tail.key);</span><br><span class="line">                --size;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 如果 key 存在，先通过哈希表定位，再修改 value，并移到头部</span></span><br><span class="line">            node.value = value;</span><br><span class="line">            moveToHead(node);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addToHead</span><span class="params">(DLinkedNode node)</span> </span>&#123;</span><br><span class="line">        node.prev = head;</span><br><span class="line">        node.next = head.next;</span><br><span class="line">        head.next.prev = node;</span><br><span class="line">        head.next = node;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">removeNode</span><span class="params">(DLinkedNode node)</span> </span>&#123;</span><br><span class="line">        node.prev.next = node.next;</span><br><span class="line">        node.next.prev = node.prev;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">moveToHead</span><span class="params">(DLinkedNode node)</span> </span>&#123;</span><br><span class="line">        removeNode(node);</span><br><span class="line">        addToHead(node);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> DLinkedNode <span class="title">removeTail</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        DLinkedNode res = tail.prev;</span><br><span class="line">        removeNode(res);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>操作系统</category>
+      </categories>
+      <tags>
+        <tag>操作系统</tag>
+        <tag>algorithm</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>设计模式</title>
+    <url>/2020/08/18/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
+  </entry>
 </search>
