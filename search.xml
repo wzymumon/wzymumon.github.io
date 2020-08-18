@@ -896,15 +896,15 @@
 </tbody></table>
 ]]></content>
       <categories>
-        <category>java</category>
+        <category>Java</category>
       </categories>
       <tags>
-        <tag>java</tag>
         <tag>OOP</tag>
+        <tag>Java</tag>
       </tags>
   </entry>
   <entry>
-    <title>java基础概念</title>
+    <title>Java基础概念</title>
     <url>/2020/08/13/Java/java-basic-knowledge/</url>
     <content><![CDATA[<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200814002005.png" alt="Java程序运行过程"></p>
 <a id="more"></a>
@@ -1207,10 +1207,10 @@
 <p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200813225954.jpeg" alt="deep and shallow copy"></p>
 ]]></content>
       <categories>
-        <category>java</category>
+        <category>Java</category>
       </categories>
       <tags>
-        <tag>java</tag>
+        <tag>Java</tag>
       </tags>
   </entry>
   <entry>
@@ -1308,11 +1308,11 @@
 <p>本机直接内存的分配不会受到 Java 堆的限制，但是，既然是内存就会受到本机总内存大小以及处理器寻址空间的限制。</p>
 ]]></content>
       <categories>
-        <category>java</category>
+        <category>Java</category>
       </categories>
       <tags>
-        <tag>java</tag>
         <tag>JVM</tag>
+        <tag>Java</tag>
       </tags>
   </entry>
   <entry>
@@ -1412,8 +1412,413 @@
       </tags>
   </entry>
   <entry>
-    <title>设计模式</title>
-    <url>/2020/08/18/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[]]></content>
+    <title>Linux 网络IO</title>
+    <url>/2020/08/18/Linux/Linux%E7%9A%84%E4%BA%94%E7%A7%8DIO%E6%A8%A1%E5%9E%8B/</url>
+    <content><![CDATA[<blockquote>
+<p> 转载自 <a href="https://segmentfault.com/a/1190000003063859">Linux IO模式及 select、poll、epoll详解</a></p>
+</blockquote>
+<a id="more"></a>
+
+<h1 id="概念说明"><a href="#概念说明" class="headerlink" title="概念说明"></a>概念说明</h1><p>在进行解释之前，首先要说明几个概念：<br>- 用户空间和内核空间<br>- 进程切换<br>- 进程的阻塞<br>- 文件描述符<br>- 缓存 I/O</p>
+<h2 id="用户空间与内核空间"><a href="#用户空间与内核空间" class="headerlink" title="用户空间与内核空间"></a>用户空间与内核空间</h2><p>现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用，称为内核空间，而将较低的3G字节（从虚拟地址0x00000000到0xBFFFFFFF），供各个进程使用，称为用户空间。</p>
+<h2 id="进程切换"><a href="#进程切换" class="headerlink" title="进程切换"></a>进程切换</h2><p>为了控制进程的执行，内核必须有能力挂起正在CPU上运行的进程，并恢复以前挂起的某个进程的执行。这种行为被称为进程切换。因此可以说，任何进程都是在操作系统内核的支持下运行的，是与内核紧密相关的。</p>
+<p>从一个进程的运行转到另一个进程上运行，这个过程中经过下面这些变化：</p>
+<ol>
+<li>保存处理机上下文，包括程序计数器和其他寄存器。</li>
+<li>更新PCB信息。</li>
+<li>把进程的PCB移入相应的队列，如就绪、在某事件阻塞等队列。</li>
+<li>选择另一个进程执行，并更新其PCB。</li>
+<li>更新内存管理的数据结构。</li>
+<li>恢复处理机上下文。</li>
+</ol>
+<blockquote>
+<p><strong>进程切换很耗资源</strong>，具体的可以参考这篇文章：<a href="http://guojing.me/linux-kernel-architecture/posts/process-switch/">进程切换</a></p>
+</blockquote>
+<h2 id="进程的阻塞"><a href="#进程的阻塞" class="headerlink" title="进程的阻塞"></a>进程的阻塞</h2><p>正在执行的进程，由于期待的某些事件未发生，如请求系统资源失败、等待某种操作的完成、新数据尚未到达或无新工作做等，则由系统自动执行阻塞原语(Block)，使自己由运行状态变为阻塞状态。可见，<strong>进程的阻塞是进程自身的一种主动行为，也因此只有处于运行态的进程（获得CPU），才可能将其转为阻塞状态</strong>。当进程进入阻塞状态，是不占用CPU资源的。</p>
+<h2 id="文件描述符fd"><a href="#文件描述符fd" class="headerlink" title="文件描述符fd"></a>文件描述符fd</h2><p>文件描述符（File descriptor）是计算机科学中的一个术语，是一个用于表述指向文件的引用的抽象化概念。</p>
+<p>文件描述符在形式上是一个非负整数。实际上，它是一个索引值，指向内核为每一个进程所维护的该进程打开文件的记录表。当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符。在程序设计中，一些涉及底层的程序编写往往会围绕着文件描述符展开。但是文件描述符这一概念往往只适用于UNIX、Linux这样的操作系统。</p>
+<h2 id="缓存-I-O"><a href="#缓存-I-O" class="headerlink" title="缓存 I/O"></a>缓存 I/O</h2><p>缓存 I/O 又被称作标准 I/O，大多数文件系统的默认 I/O 操作都是缓存 I/O。在 Linux 的缓存 I/O 机制中，操作系统会将 I/O 的数据缓存在文件系统的页缓存（ page cache ）中，也就是说，数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。</p>
+<p><strong>缓存 I/O 的缺点：</strong><br>数据在传输过程中需要在应用程序地址空间和内核进行多次数据拷贝操作，这些数据拷贝操作所带来的 CPU 以及内存开销是非常大的。</p>
+<h1 id="IO模式"><a href="#IO模式" class="headerlink" title="IO模式"></a>IO模式</h1><p>刚才说了，对于一次IO访问（以read举例），数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。所以说，当一个read操作发生时，它会经历两个阶段：</p>
+<ol>
+<li>等待数据准备 (Waiting for the data to be ready)</li>
+<li>将数据从内核拷贝到进程中 (Copying the data from the kernel to the process)</li>
+</ol>
+<p>正式因为这两个阶段，linux系统产生了下面五种网络模式的方案。<br>- 阻塞 I/O（blocking IO）<br>- 非阻塞 I/O（nonblocking IO）<br>- I/O 多路复用（ IO multiplexing）<br>- 信号驱动 I/O（ signal driven IO）<br>- 异步 I/O（asynchronous IO）</p>
+<h2 id="阻塞-I-O（blocking-IO）"><a href="#阻塞-I-O（blocking-IO）" class="headerlink" title="阻塞 I/O（blocking IO）"></a>阻塞 I/O（blocking IO）</h2><p>同步阻塞 IO 模型是最常用的一个模型，也是最简单的模型。在linux中，默认情况下所有的socket都是blocking，一个典型的读操作流程大概是这样：<br><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200818151752.png" alt="阻塞I/O"></p>
+<p>当用户进程调用了recvfrom这个系统调用，kernel就开始了IO的第一个阶段：准备数据（对于网络IO来说，很多时候数据在一开始还没有到达。比如，还没有收到一个完整的UDP包。这个时候kernel就要等待足够的数据到来）。这个过程需要等待，也就是说数据被拷贝到操作系统内核的缓冲区中是需要一个过程的。而在用户进程这边，整个进程会被阻塞（当然，是进程自己选择的阻塞）。当kernel一直等到数据准备好了，它就会将数据从kernel中拷贝到用户内存，然后kernel返回结果，用户进程才解除block的状态，重新运行起来。</p>
+<blockquote>
+<p>所以，blocking IO的特点就是在IO执行的两个阶段都被block了。</p>
+</blockquote>
+<h2 id="非阻塞-I-O（nonblocking-IO）"><a href="#非阻塞-I-O（nonblocking-IO）" class="headerlink" title="非阻塞 I/O（nonblocking IO）"></a>非阻塞 I/O（nonblocking IO）</h2><p>linux下，可以通过设置socket使其变为non-blocking。当对一个non-blocking socket执行读操作时，流程是这个样子：<br><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200818151741.png" alt="nonblocking IO"></p>
+<p>当用户进程发出read操作时，如果kernel中的数据还没有准备好，那么它并不会block用户进程，而是立刻返回一个error。从用户进程角度讲 ，它发起一个read操作后，并不需要等待，而是马上就得到了一个结果。用户进程判断结果是一个error时，它就知道数据还没有准备好，于是它可以再次发送read操作。一旦kernel中的数据准备好了，并且又再次收到了用户进程的system call，那么它马上就将数据拷贝到了用户内存，然后返回。</p>
+<blockquote>
+<p>所以，nonblocking IO的特点是用户进程需要<strong>不断的主动询问</strong>kernel数据好了没有。</p>
+</blockquote>
+<h2 id="I-O-多路复用（-IO-multiplexing）"><a href="#I-O-多路复用（-IO-multiplexing）" class="headerlink" title="I/O 多路复用（ IO multiplexing）"></a>I/O 多路复用（ IO multiplexing）</h2><p>IO multiplexing就是我们说的select，poll，epoll，有些地方也称这种IO方式为event driven IO。select/epoll的好处就在于单个process就可以同时处理多个网络连接的IO。它的基本原理就是select，poll，epoll这个function会不断的轮询所负责的所有socket，当某个socket有数据到达了，就通知用户进程。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200818151550.png" alt="IO多路复用"></p>
+<p><code>当用户进程调用了select，那么整个进程会被block</code>，而同时，kernel会“监视”所有select负责的socket，当任何一个socket中的数据准备好了，select就会返回。这个时候用户进程再调用read操作，将数据从kernel拷贝到用户进程。</p>
+<blockquote>
+<p>所以，I/O 多路复用的特点是通过一种机制一个进程能同时等待多个文件描述符，而这些文件描述符（套接字描述符）其中的任意一个进入读就绪状态，select()函数就可以返回。</p>
+</blockquote>
+<p>这个图和blocking IO的图其实并没有太大的不同，事实上，还更差一些。因为这里需要使用两个system call (select 和 recvfrom)，而blocking IO只调用了一个system call (recvfrom)。但是，用select的优势在于它可以同时处理多个connection。</p>
+<p>所以，如果处理的连接数不是很高的话，使用select/epoll的web server不一定比使用multi-threading + blocking IO的web server性能更好，可能延迟还更大。select/epoll的优势并不是对于单个连接能处理得更快，而是在于能处理更多的连接。）</p>
+<p>在IO multiplexing Model中，实际中，对于每一个socket，一般都设置成为non-blocking，但是，如上图所示，整个用户的process其实是一直被block的。只不过process是被select这个函数block，而不是被socket IO给block。</p>
+<h2 id="信号驱动-I-O-（signal-driven-IO）"><a href="#信号驱动-I-O-（signal-driven-IO）" class="headerlink" title="信号驱动 I/O （signal-driven IO）"></a>信号驱动 I/O （signal-driven IO）</h2><p>信号驱动式I/O：首先我们允许Socket进行信号驱动IO,并安装一个信号处理函数，进程继续运行并不阻塞。当数据准备好时，进程会收到一个SIGIO信号，可以在信号处理函数中调用I/O操作函数处理数据。过程如下图所示：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200818151645.png" alt="signal-driven IO"></p>
+<h2 id="异步-I-O（asynchronous-IO）"><a href="#异步-I-O（asynchronous-IO）" class="headerlink" title="异步 I/O（asynchronous IO）"></a>异步 I/O（asynchronous IO）</h2><p>inux下的asynchronous IO其实用得很少。先看一下它的流程：<br><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200818151718.png" alt="asynchronous IO"></p>
+<p>用户进程发起read操作之后，立刻就可以开始去做其它的事。而另一方面，从kernel的角度，当它受到一个asynchronous read之后，首先它会立刻返回，所以不会对用户进程产生任何block。然后，kernel会等待数据准备完成，然后将数据拷贝到用户内存，当这一切都完成之后，kernel会给用户进程发送一个signal，告诉它read操作完成了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="blocking和non-blocking的区别"><a href="#blocking和non-blocking的区别" class="headerlink" title="blocking和non-blocking的区别"></a>blocking和non-blocking的区别</h3><p>调用blocking IO会一直block住对应的进程直到操作完成，而non-blocking IO在kernel还准备数据的情况下会立刻返回。</p>
+<h3 id="synchronous-IO和asynchronous-IO的区别"><a href="#synchronous-IO和asynchronous-IO的区别" class="headerlink" title="synchronous IO和asynchronous IO的区别"></a>synchronous IO和asynchronous IO的区别</h3><p>在说明synchronous IO和asynchronous IO的区别之前，需要先给出两者的定义。POSIX的定义是这样子的：<br>- A synchronous I/O operation causes the requesting process to be blocked until that I/O operation completes;<br>- An asynchronous I/O operation does not cause the requesting process to be blocked;</p>
+<p>两者的区别就在于synchronous IO做”IO operation”的时候会将process阻塞。按照这个定义，之前所述的blocking IO，non-blocking IO，IO multiplexing都属于synchronous IO。</p>
+<p>有人会说，non-blocking IO并没有被block啊。这里有个非常“狡猾”的地方，定义中所指的”IO operation”是指真实的IO操作，就是例子中的recvfrom这个system call。non-blocking IO在执行recvfrom这个system call的时候，如果kernel的数据没有准备好，这时候不会block进程。但是，当kernel中数据准备好的时候，recvfrom会将数据从kernel拷贝到用户内存中，这个时候进程是被block了，在这段时间内，进程是被block的。</p>
+<p>而asynchronous IO则不一样，当进程发起IO 操作之后，就直接返回再也不理睬了，直到kernel发送一个信号，告诉进程说IO完成。在这整个过程中，进程完全没有被block。</p>
+<p><strong>各个IO Model的比较如图所示：</strong><br><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200818154316.png" alt="**各个IO Model的比较"></p>
+<p>通过上面的图片，可以发现non-blocking IO和asynchronous IO的区别还是很明显的。在non-blocking IO中，虽然进程大部分时间都不会被block，但是它仍然要求进程去主动的check，并且当数据准备完成以后，也需要进程主动的再次调用recvfrom来将数据拷贝到用户内存。而asynchronous IO则完全不同。它就像是用户进程将整个IO操作交给了他人（kernel）完成，然后他人做完后发信号通知。在此期间，用户进程不需要去检查IO操作的状态，也不需要主动的去拷贝数据。</p>
+]]></content>
+      <categories>
+        <category>Liunx</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>IO</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>死锁</title>
+    <url>/2020/08/18/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/%E6%AD%BB%E9%94%81/</url>
+    <content><![CDATA[<p>死锁产生的四个必要条件：互斥、占有和等待、不可抢占、环路等待。</p>
+<a id="more"></a>
+
+<h1 id="必要条件"><a href="#必要条件" class="headerlink" title="必要条件"></a>必要条件</h1><p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200818004234.png" alt="img"></p>
+<ul>
+<li>互斥：每个资源要么已经分配给了一个进程，要么就是可用的。</li>
+<li>占有和等待：已经得到了某个资源的进程可以再请求新的资源。</li>
+<li>不可抢占：已经分配给一个进程的资源不能强制性地被抢占，它只能被占有它的进程显式地释放。</li>
+<li>环路等待：有两个或者两个以上的进程组成一条环路，该环路中的每个进程都在等待下一个进程所占有的资源。</li>
+</ul>
+<h1 id="处理方法"><a href="#处理方法" class="headerlink" title="处理方法"></a>处理方法</h1><p>主要有以下四种方法：</p>
+<ul>
+<li>鸵鸟策略</li>
+<li>死锁检测与死锁恢复</li>
+<li>死锁预防</li>
+<li>死锁避免</li>
+</ul>
+<h2 id="鸵鸟策略"><a href="#鸵鸟策略" class="headerlink" title="鸵鸟策略"></a>鸵鸟策略</h2><p>把头埋在沙子里，假装根本没发生问题。</p>
+<p>因为解决死锁问题的代价很高，因此鸵鸟策略这种不采取任务措施的方案会获得更高的性能。</p>
+<p>当发生死锁时不会对用户造成多大影响，或发生死锁的概率很低，可以采用鸵鸟策略。</p>
+<p>大多数操作系统，包括 Unix，Linux 和 Windows，处理死锁问题的办法仅仅是忽略它。</p>
+<h2 id="死锁检测与死锁恢复"><a href="#死锁检测与死锁恢复" class="headerlink" title="死锁检测与死锁恢复"></a>死锁检测与死锁恢复</h2><p>不试图阻止死锁，而是当检测到死锁发生时，采取措施进行恢复。</p>
+<h3 id="每种类型一个资源的死锁检测"><a href="#每种类型一个资源的死锁检测" class="headerlink" title="每种类型一个资源的死锁检测"></a>每种类型一个资源的死锁检测</h3><p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200818004244.png" alt="img"></p>
+<p>上图为资源分配图，其中方框表示资源，圆圈表示进程。资源指向进程表示该资源已经分配给该进程，进程指向资源表示进程请求获取该资源。</p>
+<p>图 a 可以抽取出环，如图 b，它满足了环路等待条件，因此会发生死锁。</p>
+<p>每种类型一个资源的死锁检测算法是通过<strong>检测有向图是否存在环</strong>来实现，从一个节点出发进行深度优先搜索，对访问过的节点进行标记，如果访问了已经标记的节点，就表示有向图存在环，也就是检测到死锁的发生。</p>
+<h3 id="每种类型多个资源的死锁检测"><a href="#每种类型多个资源的死锁检测" class="headerlink" title="每种类型多个资源的死锁检测"></a>每种类型多个资源的死锁检测</h3><p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200818004248.png" alt="img"></p>
+<p>上图中，有三个进程四个资源，每个数据代表的含义如下：</p>
+<ul>
+<li>E 向量：资源总量</li>
+<li>A 向量：资源剩余量</li>
+<li>C 矩阵：每个进程所拥有的资源数量，每一行都代表一个进程拥有资源的数量</li>
+<li>R 矩阵：每个进程请求的资源数量</li>
+</ul>
+<p>进程 P1 和 P2 所请求的资源都得不到满足，只有进程 P3 可以，让 P3 执行，之后释放 P3 拥有的资源，此时 A = (2 2 2 0)。P2 可以执行，执行后释放 P2 拥有的资源，A = (4 2 2 1) 。P1 也可以执行。所有进程都可以顺利执行，没有死锁。</p>
+<p>算法总结如下：</p>
+<p>每个进程最开始时都不被标记，执行过程有可能被标记。当算法结束时，任何没有被标记的进程都是死锁进程。</p>
+<ol>
+<li>寻找一个没有标记的进程 Pi，它所请求的资源小于等于 A。</li>
+<li>如果找到了这样一个进程，那么将 C 矩阵的第 i 行向量加到 A 中，标记该进程，并转回 1。</li>
+<li>如果没有这样一个进程，算法终止。</li>
+</ol>
+<h3 id="死锁恢复"><a href="#死锁恢复" class="headerlink" title="死锁恢复"></a>死锁恢复</h3><ul>
+<li>利用抢占恢复</li>
+<li>利用回滚恢复</li>
+<li>通过杀死进程恢复</li>
+</ul>
+<h2 id="死锁预防"><a href="#死锁预防" class="headerlink" title="死锁预防"></a>死锁预防</h2><p>在程序运行之前预防发生死锁。</p>
+<h3 id="破坏互斥条件"><a href="#破坏互斥条件" class="headerlink" title="破坏互斥条件"></a>破坏互斥条件</h3><p>例如假脱机打印机技术允许若干个进程同时输出，唯一真正请求物理打印机的进程是打印机守护进程。</p>
+<h3 id="破坏占有和等待条件"><a href="#破坏占有和等待条件" class="headerlink" title="破坏占有和等待条件"></a>破坏占有和等待条件</h3><p>一种实现方式是规定所有进程在开始执行前请求所需要的全部资源。</p>
+<h3 id="破坏不可抢占条件"><a href="#破坏不可抢占条件" class="headerlink" title="破坏不可抢占条件"></a>破坏不可抢占条件</h3><h3 id="破坏环路等待"><a href="#破坏环路等待" class="headerlink" title="破坏环路等待"></a>破坏环路等待</h3><p>给资源统一编号，进程只能按编号顺序来请求资源。</p>
+<h2 id="死锁避免"><a href="#死锁避免" class="headerlink" title="死锁避免"></a>死锁避免</h2><p>在程序运行时避免发生死锁。</p>
+<h3 id="安全状态"><a href="#安全状态" class="headerlink" title="安全状态"></a>安全状态<img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200818004254.png" alt="img"></h3><p>图 a 的第二列 Has 表示已拥有的资源数，第三列 Max 表示总共需要的资源数，Free 表示还有可以使用的资源数。从图 a 开始出发，先让 B 拥有所需的所有资源（图 b），运行结束后释放 B，此时 Free 变为 5（图 c）；接着以同样的方式运行 C 和 A，使得所有进程都能成功运行，因此可以称图 a 所示的状态时安全的。</p>
+<p>定义：如果没有死锁发生，并且即使所有进程突然请求对资源的最大需求，也仍然存在某种调度次序能够使得每一个进程运行完毕，则称该状态是安全的。</p>
+<p>安全状态的检测与死锁的检测类似，因为安全状态必须要求不能发生死锁。下面的银行家算法与死锁检测算法非常类似，可以结合着做参考对比。</p>
+<h3 id="单个资源的银行家算法"><a href="#单个资源的银行家算法" class="headerlink" title="单个资源的银行家算法"></a>单个资源的银行家算法</h3><p>一个小城镇的银行家，他向一群客户分别承诺了一定的贷款额度，算法要做的是判断对请求的满足是否会进入不安全状态，如果是，就拒绝请求；否则予以分配。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200818160653.png" alt="img"></p>
+<p>上图 c 为不安全状态，因此算法会拒绝之前的请求，从而避免进入图 c 中的状态。</p>
+<h3 id="多个资源的银行家算法"><a href="#多个资源的银行家算法" class="headerlink" title="多个资源的银行家算法"></a>多个资源的银行家算法</h3><p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200818160653.png" alt="img"></p>
+<p>上图中有五个进程，四个资源。左边的图表示已经分配的资源，右边的图表示还需要分配的资源。最右边的 E、P 以及 A 分别表示：总资源、已分配资源以及可用资源，注意这三个为向量，而不是具体数值，例如 A=(1020)，表示 4 个资源分别还剩下 1/0/2/0。</p>
+<p>检查一个状态是否安全的算法如下：</p>
+<ul>
+<li>查找右边的矩阵是否存在一行小于等于向量 A。如果不存在这样的行，那么系统将会发生死锁，状态是不安全的。</li>
+<li>假若找到这样一行，将该进程标记为终止，并将其已分配资源加到 A 中。</li>
+<li>重复以上两步，直到所有进程都标记为终止，则状态时安全的。</li>
+</ul>
+<p>如果一个状态不是安全的，需要拒绝进入这个状态。</p>
+<blockquote>
+<p>转载自 [cyc 2018 计算机操作系统 -死锁]([<a href="https://cyc2018.github.io/CS-Notes/#/notes/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%20-%20%E6%AD%BB%E9%94%81]">https://cyc2018.github.io/CS-Notes/#/notes/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%20-%20%E6%AD%BB%E9%94%81]</a>(<a href="https://cyc2018.github.io/CS-Notes/#/notes/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F">https://cyc2018.github.io/CS-Notes/#/notes/计算机操作系统</a> - 死锁))</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>操作系统</category>
+      </categories>
+      <tags>
+        <tag>操作系统</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JVM垃圾回收机制</title>
+    <url>/2020/08/18/Java/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6/</url>
+    <content><![CDATA[<p>java垃圾回收机制</p>
+<a id="more"></a>
+
+<h1 id="JVM内存分配"><a href="#JVM内存分配" class="headerlink" title="JVM内存分配"></a>JVM内存分配</h1><p>Java 的自动内存管理主要是针对对象内存的回收和对象内存的分配。同时，Java 自动内存管理最核心的功能是 <strong>堆</strong> 内存中对象的分配与回收。</p>
+<p>Java 堆是垃圾收集器管理的主要区域，因此也被称作<strong>GC 堆（Garbage Collected Heap）</strong>.从垃圾回收的角度，由于现在收集器基本都采用分代垃圾收集算法，所以 Java 堆还可以细分为：新生代和老年代：再细致一点有：Eden 空间、From Survivor、To Survivor 空间等。<strong>进一步划分的目的是更好地回收内存，或者更快地分配内存。</strong></p>
+<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200817144410.png" alt="堆空间的基本结构"></p>
+<p>上图所示的 Eden 区、From Survivor0(“From”) 区、To Survivor1(“To”) 区都属于新生代，Old Memory 区属于老年代。</p>
+<p>大部分情况，对象都会首先在 Eden 区域分配，在一次新生代垃圾回收后，如果对象还存活，则会进入 s0 或者 s1，并且对象的年龄还会加 1(Eden 区-&gt;Survivor 区后对象的初始年龄变为 1)，当它的年龄增加到一定程度（默认为 15 岁），就会被晋升到老年代中。</p>
+<p>经过这次GC后，Eden区和”From”区已经被清空。这个时候，”From”和”To”会交换他们的角色，也就是新的”To”就是上次GC前的“From”，新的”From”就是上次GC前的”To”。不管怎样，都会保证名为To的Survivor区域是空的。Minor GC会一直重复这样的过程，直到“To”区被填满，”To”区被填满之后，会将所有对象移动到老年代中。</p>
+<h1 id="判断对象状态"><a href="#判断对象状态" class="headerlink" title="判断对象状态"></a>判断对象状态</h1><p>无论是通过引用计数法判断对象引用数量，还是通过可达性分析法判断对象的引用链是否可达，判定对象的存活都与“引用”有关。</p>
+<h2 id="判断常量是否需要回收"><a href="#判断常量是否需要回收" class="headerlink" title="判断常量是否需要回收"></a>判断常量是否需要回收</h2><p>运行时常量池主要回收的是废弃的常量。那么，我们如何判断一个常量是废弃常量呢？</p>
+<p>假如在常量池中存在字符串 “abc”，如果当前没有任何 String 对象引用该字符串常量的话，就说明常量 “abc” 就是废弃常量，如果这时发生内存回收的话而且有必要的话，”abc” 就会被系统清理出常量池。</p>
+<h2 id="判断类是否需要回收"><a href="#判断类是否需要回收" class="headerlink" title="判断类是否需要回收"></a>判断类是否需要回收</h2><p>方法区主要回收的是无用的类，那么如何判断一个类是无用的类的呢？</p>
+<p>判定一个常量是否是“废弃常量”比较简单，而要判定一个类是否是“无用的类”的条件则相对苛刻许多。类需要同时满足下面 3 个条件才能算是 <strong>“无用的类”</strong> ：</p>
+<ul>
+<li>该类所有的实例都已经被回收，也就是 Java 堆中不存在该类的任何实例。</li>
+<li>加载该类的 ClassLoader 已经被回收。</li>
+<li>该类对应的 java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。</li>
+</ul>
+<p>虚拟机可以对满足上述 3 个条件的无用类进行回收，这里说的仅仅是“可以”，而并不是和对象一样不使用了就会必然被回收。</p>
+<h1 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h1><h2 id="标记-清除算法"><a href="#标记-清除算法" class="headerlink" title="标记-清除算法"></a>标记-清除算法</h2><p>该算法分为“标记”和“清除”阶段：首先标记出所有不需要回收的对象，在标记完成后统一回收掉所有没有被标记的对象。它是最基础的收集算法，后续的算法都是对其不足进行改进得到。这种垃圾收集算法会带来两个明显的问题：</p>
+<ol>
+<li><strong>效率问题</strong></li>
+<li><strong>空间问题（标记清除后会产生大量不连续的碎片）</strong></li>
+</ol>
+<h2 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h2><p>为了解决效率问题，“复制”收集算法出现了。它可以将内存分为大小相同的两块，每次使用其中的一块。当这一块的内存使用完后，就将还存活的对象复制到另一块去，然后再把使用的空间一次清理掉。这样就使每次的内存回收都是对内存区间的一半进行回收。</p>
+<h2 id="标记-整理算法"><a href="#标记-整理算法" class="headerlink" title="标记-整理算法"></a>标记-整理算法</h2><p>根据老年代的特点提出的一种标记算法，标记过程仍然与“标记-清除”算法一样，但后续步骤不是直接对可回收对象回收，而是让所有存活的对象向一端移动，然后直接清理掉端边界以外的内存。</p>
+<h2 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h2><p>当前虚拟机的垃圾收集都采用分代收集算法，这种算法没有什么新的思想，只是根据对象存活周期的不同将内存分为几块。一般将 java 堆分为新生代和老年代，这样我们就可以根据各个年代的特点选择合适的垃圾收集算法。</p>
+<p><strong>比如在新生代中，每次收集都会有大量对象死去，所以可以选择复制算法，只需要付出少量对象的复制成本就可以完成每次垃圾收集。而老年代的对象存活几率是比较高的，而且没有额外的空间对它进行分配担保，所以我们必须选择“标记-清除”或“标记-整理”算法进行垃圾收集。</strong></p>
+<p><strong>延伸面试问题：</strong> HotSpot 为什么要分为新生代和老年代？</p>
+<h1 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h1><h2 id="G1收集器"><a href="#G1收集器" class="headerlink" title="G1收集器"></a>G1收集器</h2><p><strong>G1 (Garbage-First) 是一款面向服务器的垃圾收集器,主要针对配备多颗处理器及大容量内存的机器. 以极高概率满足 GC 停顿时间要求的同时,还具备高吞吐量性能特征.</strong></p>
+<p>被视为 JDK 1.7 中 HotSpot 虚拟机的一个重要进化特征。它具备一下特点：</p>
+<ul>
+<li><strong>并行与并发</strong>：G1 能充分利用 CPU、多核环境下的硬件优势，使用多个 CPU（CPU 或者 CPU 核心）来缩短 Stop-The-World 停顿时间。部分其他收集器原本需要停顿 Java 线程执行的 GC 动作，G1 收集器仍然可以通过并发的方式让 java 程序继续执行。</li>
+<li><strong>分代收集</strong>：虽然 G1 可以不需要其他收集器配合就能独立管理整个 GC 堆，但是还是保留了分代的概念。</li>
+<li><strong>空间整合</strong>：与 CMS 的“标记–清理”算法不同，G1 从整体来看是基于“标记整理”算法实现的收集器；从局部上来看是基于“复制”算法实现的。</li>
+<li><strong>可预测的停顿</strong>：这是 G1 相对于 CMS 的另一个大优势，降低停顿时间是 G1 和 CMS 共同的关注点，但 G1 除了追求低停顿外，还能建立可预测的停顿时间模型，能让使用者明确指定在一个长度为 M 毫秒的时间片段内。</li>
+</ul>
+<p>G1 收集器的运作大致分为以下几个步骤：</p>
+<ul>
+<li><strong>初始标记</strong></li>
+<li><strong>并发标记</strong></li>
+<li><strong>最终标记</strong></li>
+<li><strong>筛选回收</strong></li>
+</ul>
+<p>**G1 收集器在后台维护了一个优先列表，每次根据允许的收集时间，优先选择回收价值最大的 Region(这也就是它的名字 Garbage-First 的由来)**。这种使用 Region 划分内存空间以及有优先级的区域回收方式，保证了 G1 收集器在有限时间内可以尽可能高的收集效率（把内存化整为零）。</p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>JVM</tag>
+        <tag>Java</tag>
+        <tag>GC</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Redis中的数据结构及使用场景</title>
+    <url>/2020/08/12/Redis/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%8F%8A%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/</url>
+    <content><![CDATA[<blockquote>
+<p><strong>“Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache and message broker.”</strong> —— Redis是一个开放源代码（BSD许可）的内存中数据结构存储，用作数据库，缓存和消息代理。 <em>(摘自官网)</em></p>
+</blockquote>
+<a id="more"></a>
+
+<h1 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h1><p><strong>Redis</strong> 有 5 种基础数据结构，它们分别是：<strong>string(字符串)**、</strong>list(列表)<strong>、</strong>hash(字典)<strong>、</strong>set(集合)** 和 **zset(有序集合)**。这 5 种是 Redis 相关知识中最基础、最重要的部分。</p>
+<blockquote>
+<p>每种数据结构都有自己底层的内部编码实现，而且是多种实现，这样Redis会在合适的场景选择合适的内部编码。</p>
+<p>可以看到每种数据结构都有两种以上的内部编码实现，例如string数据结构就包含了raw、int和embstr三种内部编码。</p>
+<p>同时，有些内部编码可以作为多种外部数据结构的内部实现，例如ziplist就是hash、list和zset共有的内部编码。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200811173833.png" alt="image-20200811173830288"></p>
+<blockquote>
+<p><a href="https://redislabs.com/ebook/part-1-getting-started/chapter-1-getting-to-know-redis/1-2-what-redis-data-structures-look-like/">what-redis-data-structures-look-like</a></p>
+</blockquote>
+<h2 id="string"><a href="#string" class="headerlink" title="string"></a>string</h2><p>Redis 中的字符串是一种 <strong>动态字符串</strong>，这意味着使用者可以修改，它的底层实现有点类似于 Java 中的 <strong>ArrayList</strong>，有一个字符数组，从源码的 <code>sds.h/sdshdr </code>文件 中可以看到 Redis 底层对于字符串的定义 <strong>SDS</strong>，即 <em>Simple Dynamic String</em> 结构：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Note: sdshdr5 is never used, we just access the flags byte directly.</span></span><br><span class="line"><span class="comment"> * However is here to document the layout of type 5 SDS strings. */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr5</span> &#123;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, and 5 msb of string length */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr8</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint8_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint8_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr16</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint16_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint16_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr32</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint32_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">attribute__</span> ((__<span class="title">packed__</span>)) <span class="title">sdshdr64</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint64_t</span> len; <span class="comment">/* used */</span></span><br><span class="line">    <span class="keyword">uint64_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<p>你会发现同样一组结构 Redis 使用泛型定义了好多次，<strong>为什么不直接使用 int 类型呢？</strong></p>
+<p>因为当字符串比较短的时候，len 和 alloc 可以使用 byte 和 short 来表示，<strong>Redis 为了对内存做极致的优化，不同长度的字符串使用不同的结构体来表示。</strong></p>
+<h3 id="SDS-与-C-字符串的区别"><a href="#SDS-与-C-字符串的区别" class="headerlink" title="SDS 与 C 字符串的区别"></a>SDS 与 C 字符串的区别</h3><p>为什么不考虑直接使用 C 语言的字符串呢？因为 C 语言这种简单的字符串表示方式 <strong>不符合 Redis 对字符串在安全性、效率以及功能方面的要求</strong>。我们知道，C 语言使用了一个长度为 N+1 的字符数组来表示长度为 N 的字符串，并且字符数组最后一个元素总是 <code>&#39;\0&#39;</code>。*(下图就展示了 C 语言中值为 “Redis” 的一个字符数组)*</p>
+<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200812165018.png" alt="img"></p>
+<p>这样简单的数据结构可能会造成以下一些问题：</p>
+<ul>
+<li><strong>获取字符串长度为 O(N) 级别的操作</strong> → 因为 C 不保存数组的长度，每次都需要遍历一遍整个数组；</li>
+<li>不能很好的杜绝 <strong>缓冲区溢出/内存泄漏</strong> 的问题 → 跟上述问题原因一样，如果执行拼接 or 缩短字符串的操作，如果操作不当就很容易造成上述问题；</li>
+<li>C 字符串 <strong>只能保存文本数据</strong> → 因为 C 语言中的字符串必须符合某种编码（比如 ASCII），例如中间出现的 <code>&#39;\0&#39;</code> 可能会被判定为提前结束的字符串而识别不了；</li>
+</ul>
+<p>我们以追加字符串的操作举例，Redis 源码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Append the specified binary-safe string pointed by &#x27;t&#x27; of &#x27;len&#x27; bytes to the</span></span><br><span class="line"><span class="comment"> * end of the specified sds string &#x27;s&#x27;.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * After the call, the passed sds string is no longer valid and all the</span></span><br><span class="line"><span class="comment"> * references must be substituted with the new pointer returned by the call. */</span></span><br><span class="line"><span class="function">sds <span class="title">sdscatlen</span><span class="params">(sds s, <span class="keyword">const</span> <span class="keyword">void</span> *t, <span class="keyword">size_t</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获取原字符串的长度</span></span><br><span class="line">    <span class="keyword">size_t</span> curlen = sdslen(s);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 按需调整空间，如果容量不够容纳追加的内容，就会重新分配字节数组并复制原字符串的内容到新数组中</span></span><br><span class="line">    s = sdsMakeRoomFor(s,len); </span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;   <span class="comment">// 内存不足</span></span><br><span class="line">    <span class="built_in">memcpy</span>(s+curlen, t, len);     <span class="comment">// 追加目标字符串到字节数组中</span></span><br><span class="line">    sdssetlen(s, curlen+len);     <span class="comment">// 设置追加后的长度</span></span><br><span class="line">    s[curlen+len] = <span class="string">&#x27;\0&#x27;</span>;         <span class="comment">// 让字符串以 \0 结尾，便于调试打印</span></span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>注：Redis 规定了字符串的长度不得超过 512 MB。</strong></li>
+</ul>
+<h3 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h3><p>安装好 Redis，我们可以使用 <code>redis-cli</code> 来对 Redis 进行命令行的操作，当然 Redis 官方也提供了在线的调试器，你也可以在里面敲入命令进行操作：<a href="http://try.redis.io/#run">http://try.redis.io/#run</a></p>
+<h4 id="设置和获取键值对"><a href="#设置和获取键值对" class="headerlink" title="设置和获取键值对"></a>设置和获取键值对</h4><figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> SET key value</span></span><br><span class="line">OK</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> GET key</span></span><br><span class="line">&quot;value&quot;Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<p>正如你看到的，我们通常使用 <code>SET</code> 和 <code>GET</code> 来设置和获取字符串值。</p>
+<p>值可以是任何种类的字符串（包括二进制数据），例如你可以在一个键下保存一张 <code>.jpeg</code> 图片，只需要注意不要超过 512 MB 的最大限度就好了。</p>
+<p>当 key 存在时，<code>SET</code> 命令会覆盖掉你上一次设置的值：</p>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> SET key newValue</span></span><br><span class="line">OK</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> GET key</span></span><br><span class="line">&quot;newValue&quot;Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<p>另外你还可以使用 <code>EXISTS</code> 和 <code>DEL</code> 关键字来查询是否存在和删除键值对：</p>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> EXISTS key</span></span><br><span class="line">(integer) 1</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> DEL key</span></span><br><span class="line">(integer) 1</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> GET key</span></span><br><span class="line">(nil)Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<h4 id="批量设置键值对"><a href="#批量设置键值对" class="headerlink" title="批量设置键值对"></a>批量设置键值对</h4><figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> SET key1 value1</span></span><br><span class="line">OK</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> SET key2 value2</span></span><br><span class="line">OK</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> MGET key1 key2 key3    <span class="comment"># 返回一个列表</span></span></span><br><span class="line">1) &quot;value1&quot;</span><br><span class="line">2) &quot;value2&quot;</span><br><span class="line">3) (nil)</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> MSET key1 value1 key2 value2</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> MGET key1 key2</span></span><br><span class="line">1) &quot;value1&quot;</span><br><span class="line">2) &quot;value2&quot;Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<h4 id="过期和-SET-命令扩展"><a href="#过期和-SET-命令扩展" class="headerlink" title="过期和 SET 命令扩展"></a>过期和 SET 命令扩展</h4><p>可以对 key 设置过期时间，到时间会被自动删除，这个功能常用来控制缓存的失效时间。*(过期可以是任意数据结构)*</p>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> SET key value1</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> GET key</span></span><br><span class="line">&quot;value1&quot;</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> EXPIRE name 5    <span class="comment"># 5s 后过期</span></span></span><br><span class="line">...                # 等待 5s</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> GET key</span></span><br><span class="line">(nil)Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<p>等价于 <code>SET</code> + <code>EXPIRE</code> 的 <code>SETEX</code> 命令：</p>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> SETEX key 5 value1</span></span><br><span class="line">...                # 等待 5s 后获取</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> GET key</span></span><br><span class="line">(nil)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> SETNX key value1  <span class="comment"># 如果 key 不存在则 SET 成功</span></span></span><br><span class="line">(integer) 1</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> SETNX key value1  <span class="comment"># 如果 key 存在则 SET 失败</span></span></span><br><span class="line">(integer) 0</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> GET key</span></span><br><span class="line">&quot;value&quot;             # 没有改变 Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<h4 id="计数"><a href="#计数" class="headerlink" title="计数"></a>计数</h4><p>如果 value 是一个整数，还可以对它使用 <code>INCR</code> 命令进行 <strong>原子性</strong> 的自增操作，这意味着及时多个客户端对同一个 key 进行操作，也决不会导致竞争的情况：</p>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> SET counter 100</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> INCR counter</span></span><br><span class="line">(integer) 101</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> INCRBY counter 50</span></span><br><span class="line">(integer) 151Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<h4 id="返回原值的-GETSET-命令"><a href="#返回原值的-GETSET-命令" class="headerlink" title="返回原值的 GETSET 命令"></a>返回原值的 GETSET 命令</h4><p>对字符串，还有一个 <code>GETSET</code> 比较让人觉得有意思，它的功能跟它名字一样：为 key 设置一个值并返回原值：</p>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> SET key value</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> GETSET key value1</span></span><br><span class="line">&quot;value&quot;Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<p>这可以对于某一些需要隔一段时间就统计的 key 很方便的设置和查看，例如：系统每当由用户进入的时候你就是用 <code>INCR</code> 命令操作一个 key，当需要统计时候你就把这个 key 使用 <code>GETSET</code> 命令重新赋值为 0，这样就达到了统计的目的。</p>
+<h2 id="list"><a href="#list" class="headerlink" title="list"></a>list</h2><p>Redis 的列表相当于 Java 语言中的 <strong>LinkedList</strong>，注意它是链表而不是数组。这意味着 list 的插入和删除操作非常快，时间复杂度为 O(1)，但是索引定位很慢，时间复杂度为 O(n)。</p>
+<p>我们可以从源码的 <code>adlist.h/listNode</code> 来看到对其的定义：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Node, List, and Iterator are the only data structures used currently. */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> *<span class="title">prev</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> *<span class="title">next</span>;</span></span><br><span class="line">    <span class="keyword">void</span> *value;</span><br><span class="line">&#125; listNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">listIter</span> &#123;</span></span><br><span class="line">    listNode *next;</span><br><span class="line">    <span class="keyword">int</span> direction;</span><br><span class="line">&#125; listIter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">list</span> &#123;</span></span><br><span class="line">    listNode *head;</span><br><span class="line">    listNode *tail;</span><br><span class="line">    <span class="keyword">void</span> *(*dup)(<span class="keyword">void</span> *ptr);</span><br><span class="line">    <span class="keyword">void</span> (*<span class="built_in">free</span>)(<span class="keyword">void</span> *ptr);</span><br><span class="line">    <span class="keyword">int</span> (*match)(<span class="keyword">void</span> *ptr, <span class="keyword">void</span> *key);</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> len;</span><br><span class="line">&#125; <span class="built_in">list</span>;Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，多个 listNode 可以通过 <code>prev</code> 和 <code>next</code> 指针组成双向链表：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200812165029.png" alt="img"></p>
+<p>虽然仅仅使用多个 listNode 结构就可以组成链表，但是使用 <code>adlist.h/list</code> 结构来持有链表的话，操作起来会更加方便：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200812165035.png" alt="img"></p>
+<h3 id="基本操作-1"><a href="#基本操作-1" class="headerlink" title="基本操作"></a>基本操作</h3><ul>
+<li><code>LPUSH</code> 和 <code>RPUSH</code> 分别可以向 list 的左边（头部）和右边（尾部）添加一个新元素；</li>
+<li><code>LRANGE</code> 命令可以从 list 中取出一定范围的元素；</li>
+<li><code>LINDEX</code> 命令可以从 list 中取出指定下表的元素，相当于 Java 链表操作中的 <code>get(int index)</code> 操作；</li>
+</ul>
+<p>示范：</p>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> rpush mylist A</span></span><br><span class="line">(integer) 1</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> rpush mylist B</span></span><br><span class="line">(integer) 2</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> lpush mylist first</span></span><br><span class="line">(integer) 3</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> lrange mylist 0 -1    <span class="comment"># -1 表示倒数第一个元素, 这里表示从第一个元素到最后一个元素，即所有</span></span></span><br><span class="line">1) &quot;first&quot;</span><br><span class="line">2) &quot;A&quot;</span><br><span class="line">3) &quot;B&quot;Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<h4 id="list-实现队列"><a href="#list-实现队列" class="headerlink" title="list 实现队列"></a>list 实现队列</h4><p>队列是先进先出的数据结构，常用于消息排队和异步逻辑处理，它会确保元素的访问顺序：</p>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> RPUSH books python java golang</span></span><br><span class="line">(integer) 3</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> LPOP books</span></span><br><span class="line">&quot;python&quot;</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> LPOP books</span></span><br><span class="line">&quot;java&quot;</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> LPOP books</span></span><br><span class="line">&quot;golang&quot;</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> LPOP books</span></span><br><span class="line">(nil)Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<h4 id="list-实现栈"><a href="#list-实现栈" class="headerlink" title="list 实现栈"></a>list 实现栈</h4><p>栈是先进后出的数据结构，跟队列正好相反：</p>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> RPUSH books python java golang</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> RPOP books</span></span><br><span class="line">&quot;golang&quot;</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> RPOP books</span></span><br><span class="line">&quot;java&quot;</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> RPOP books</span></span><br><span class="line">&quot;python&quot;</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> RPOP books</span></span><br><span class="line">(nil)Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<h2 id="hash"><a href="#hash" class="headerlink" title="hash"></a>hash</h2><p>Redis 中的字典相当于 Java 中的 <strong>HashMap</strong>，内部实现也差不多类似，都是通过 <strong>“数组 + 链表”</strong> 的链地址法来解决部分 <strong>哈希冲突</strong>，同时这样的结构也吸收了两种不同数据结构的优点。源码定义如 <code>dict.h/dictht</code> 定义：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictht</span> &#123;</span></span><br><span class="line">    <span class="comment">// 哈希表数组</span></span><br><span class="line">    dictEntry **table;</span><br><span class="line">    <span class="comment">// 哈希表大小</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> size;</span><br><span class="line">    <span class="comment">// 哈希表大小掩码，用于计算索引值，总是等于 size - 1</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> sizemask;</span><br><span class="line">    <span class="comment">// 该哈希表已有节点的数量</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> used;</span><br><span class="line">&#125; dictht;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dict</span> &#123;</span></span><br><span class="line">    dictType *type;</span><br><span class="line">    <span class="keyword">void</span> *privdata;</span><br><span class="line">    <span class="comment">// 内部有两个 dictht 结构</span></span><br><span class="line">    dictht ht[<span class="number">2</span>];</span><br><span class="line">    <span class="keyword">long</span> rehashidx; <span class="comment">/* rehashing not in progress if rehashidx == -1 */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> iterators; <span class="comment">/* number of iterators currently running */</span></span><br><span class="line">&#125; dict;Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<p><code>table</code> 属性是一个数组，数组中的每个元素都是一个指向 <code>dict.h/dictEntry</code> 结构的指针，而每个 <code>dictEntry</code> 结构保存着一个键值对：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> &#123;</span></span><br><span class="line">    <span class="comment">// 键</span></span><br><span class="line">    <span class="keyword">void</span> *key;</span><br><span class="line">    <span class="comment">// 值</span></span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">        <span class="keyword">void</span> *val;</span><br><span class="line">        <span class="keyword">uint64_t</span> u64;</span><br><span class="line">        <span class="keyword">int64_t</span> s64;</span><br><span class="line">        <span class="keyword">double</span> d;</span><br><span class="line">    &#125; v;</span><br><span class="line">    <span class="comment">// 指向下个哈希表节点，形成链表</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125; dictEntry;Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<p>可以从上面的源码中看到，<strong>实际上字典结构的内部包含两个 hashtable</strong>，通常情况下只有一个 hashtable 是有值的，但是在字典扩容缩容时，需要分配新的 hashtable，然后进行 <strong>渐进式搬迁</strong> *(下面说原因)*。</p>
+<h3 id="渐进式-rehash"><a href="#渐进式-rehash" class="headerlink" title="渐进式 rehash"></a>渐进式 rehash</h3><p>大字典的扩容是比较耗时间的，需要重新申请新的数组，然后将旧字典所有链表中的元素重新挂接到新的数组下面，这是一个 O(n) 级别的操作，作为单线程的 Redis 很难承受这样耗时的过程，所以 Redis 使用 <strong>渐进式 rehash</strong> 小步搬迁：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200812165043.png" alt="img"></p>
+<p>渐进式 rehash 会在 rehash 的同时，保留新旧两个 hash 结构，如上图所示，查询时会同时查询两个 hash 结构，然后在后续的定时任务以及 hash 操作指令中，循序渐进的把旧字典的内容迁移到新字典中。当搬迁完成了，就会使用新的 hash 结构取而代之。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Performs N steps of incremental rehashing. Returns 1 if there are still</span></span><br><span class="line"><span class="comment"> * keys to move from the old to the new hash table, otherwise 0 is returned.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Note that a rehashing step consists in moving a bucket (that may have more</span></span><br><span class="line"><span class="comment"> * than one key as we use chaining) from the old to the new hash table, however</span></span><br><span class="line"><span class="comment"> * since part of the hash table may be composed of empty spaces, it is not</span></span><br><span class="line"><span class="comment"> * guaranteed that this function will rehash even a single bucket, since it</span></span><br><span class="line"><span class="comment"> * will visit at max N*10 empty buckets in total, otherwise the amount of</span></span><br><span class="line"><span class="comment"> * work it does would be unbound and the function may block for a long time. */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dictRehash</span><span class="params">(dict *d, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> empty_visits = n * <span class="number">10</span>; <span class="comment">/* Max number of empty buckets to visit. */</span></span><br><span class="line">    <span class="keyword">if</span> (!dictIsRehashing(d)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (n-- &amp;&amp; d-&gt;ht[<span class="number">0</span>].used != <span class="number">0</span>) &#123;</span><br><span class="line">        dictEntry *de, *nextde;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* Note that rehashidx can&#x27;t overflow as we are sure there are more</span></span><br><span class="line"><span class="comment">         * elements because ht[0].used != 0 */</span></span><br><span class="line">        assert(d-&gt;ht[<span class="number">0</span>].size &gt; (<span class="keyword">unsigned</span> <span class="keyword">long</span>) d-&gt;rehashidx);</span><br><span class="line">        <span class="keyword">while</span> (d-&gt;ht[<span class="number">0</span>].table[d-&gt;rehashidx] == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            d-&gt;rehashidx++;</span><br><span class="line">            <span class="keyword">if</span> (--empty_visits == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        de = d-&gt;ht[<span class="number">0</span>].table[d-&gt;rehashidx];</span><br><span class="line">        <span class="comment">/* Move all the keys in this bucket from the old to the new hash HT */</span></span><br><span class="line">        <span class="keyword">while</span> (de) &#123;</span><br><span class="line">            <span class="keyword">uint64_t</span> h;</span><br><span class="line"></span><br><span class="line">            nextde = de-&gt;next;</span><br><span class="line">            <span class="comment">/* Get the index in the new hash table */</span></span><br><span class="line">            h = dictHashKey(d, de-&gt;key) &amp; d-&gt;ht[<span class="number">1</span>].sizemask;</span><br><span class="line">            de-&gt;next = d-&gt;ht[<span class="number">1</span>].table[h];</span><br><span class="line">            d-&gt;ht[<span class="number">1</span>].table[h] = de;</span><br><span class="line">            d-&gt;ht[<span class="number">0</span>].used--;</span><br><span class="line">            d-&gt;ht[<span class="number">1</span>].used++;</span><br><span class="line">            de = nextde;</span><br><span class="line">        &#125;</span><br><span class="line">        d-&gt;ht[<span class="number">0</span>].table[d-&gt;rehashidx] = <span class="literal">NULL</span>;</span><br><span class="line">        d-&gt;rehashidx++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Check if we already rehashed the whole table... */</span></span><br><span class="line">    <span class="keyword">if</span> (d-&gt;ht[<span class="number">0</span>].used == <span class="number">0</span>) &#123;</span><br><span class="line">        zfree(d-&gt;ht[<span class="number">0</span>].table);</span><br><span class="line">        d-&gt;ht[<span class="number">0</span>] = d-&gt;ht[<span class="number">1</span>];</span><br><span class="line">        _dictReset(&amp;d-&gt;ht[<span class="number">1</span>]);</span><br><span class="line">        d-&gt;rehashidx = <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* More to rehash... */</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="扩缩容的条件"><a href="#扩缩容的条件" class="headerlink" title="扩缩容的条件"></a>扩缩容的条件</h3><p>正常情况下，当 hash 表中 <strong>元素的个数等于第一维数组的长度时</strong>，就会开始扩容，扩容的新数组是 <strong>原数组大小的 2 倍</strong>。不过如果 Redis 正在做 <code>bgsave(持久化命令)</code>，为了减少内存也得过多分离，Redis 尽量不去扩容，但是如果 hash 表非常满了，<strong>达到了第一维数组长度的 5 倍了</strong>，这个时候就会 <strong>强制扩容</strong>。</p>
+<p>当 hash 表因为元素逐渐被删除变得越来越稀疏时，Redis 会对 hash 表进行缩容来减少 hash 表的第一维数组空间占用。所用的条件是 **元素个数低于数组长度的 10%**，缩容不会考虑 Redis 是否在做 <code>bgsave</code>。</p>
+<h3 id="基本操作-2"><a href="#基本操作-2" class="headerlink" title="基本操作"></a>基本操作</h3><p>hash 也有缺点，hash 结构的存储消耗要高于单个字符串，所以到底该使用 hash 还是字符串，需要根据实际情况再三权衡：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> HSET books java <span class="string">&quot;think in java&quot;</span>    <span class="comment"># 命令行的字符串如果包含空格则需要使用引号包裹</span></span></span><br><span class="line">(integer) 1</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> HSET books python <span class="string">&quot;python cookbook&quot;</span></span></span><br><span class="line">(integer) 1</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> HGETALL books    <span class="comment"># key 和 value 间隔出现</span></span></span><br><span class="line">1) &quot;java&quot;</span><br><span class="line">2) &quot;think in java&quot;</span><br><span class="line">3) &quot;python&quot;</span><br><span class="line">4) &quot;python cookbook&quot;</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> HGET books java</span></span><br><span class="line">&quot;think in java&quot;</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> HSET books java <span class="string">&quot;head first java&quot;</span>  </span></span><br><span class="line">(integer) 0        # 因为是更新操作，所以返回 0</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> HMSET books java <span class="string">&quot;effetive  java&quot;</span> python <span class="string">&quot;learning python&quot;</span>    <span class="comment"># 批量操作</span></span></span><br><span class="line">OKCopy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<h2 id="set"><a href="#set" class="headerlink" title="set"></a>set</h2><p>Redis 的集合相当于 Java 语言中的 <strong>HashSet</strong>，它内部的键值对是无序、唯一的。它的内部实现相当于一个特殊的字典，字典中所有的 value 都是一个值 NULL。</p>
+<h3 id="基本操作-3"><a href="#基本操作-3" class="headerlink" title="基本操作"></a>基本操作</h3><p>由于该结构比较简单，我们直接来看看是如何使用的：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> SADD books java</span></span><br><span class="line">(integer) 1</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> SADD books java    <span class="comment"># 重复</span></span></span><br><span class="line">(integer) 0</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> SADD books python golang</span></span><br><span class="line">(integer) 2</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> SMEMBERS books    <span class="comment"># 注意顺序，set 是无序的 </span></span></span><br><span class="line">1) &quot;java&quot;</span><br><span class="line">2) &quot;python&quot;</span><br><span class="line">3) &quot;golang&quot;</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> SISMEMBER books java    <span class="comment"># 查询某个 value 是否存在，相当于 contains</span></span></span><br><span class="line">(integer) 1</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> SCARD books    <span class="comment"># 获取长度</span></span></span><br><span class="line">(integer) 3</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> SPOP books     <span class="comment"># 弹出一个</span></span></span><br><span class="line">&quot;java&quot;Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<h2 id="zset"><a href="#zset" class="headerlink" title="zset"></a>zset</h2><p>这可能使 Redis 最具特色的一个数据结构了，它类似于 Java 中 <strong>SortedSet</strong> 和 <strong>HashMap</strong> 的结合体，一方面它是一个 set，保证了内部 value 的唯一性，另一方面它可以为每个 value 赋予一个 score 值，用来代表排序的权重。</p>
+<p>它的内部实现用的是一种叫做 <strong>「跳跃表」</strong> 的数据结构，由于比较复杂，所以在这里简单提一下原理就好了：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200812165051.png" alt="img"></p>
+<p>想象你是一家创业公司的老板，刚开始只有几个人，大家都平起平坐。后来随着公司的发展，人数越来越多，团队沟通成本逐渐增加，渐渐地引入了组长制，对团队进行划分，于是有一些人<strong>又是员工又有组长的身份</strong>。</p>
+<p>再后来，公司规模进一步扩大，公司需要再进入一个层级：部门。于是每个部门又会从组长中推举一位选出部长。</p>
+<p>跳跃表就类似于这样的机制，最下面一层所有的元素都会串起来，都是员工，然后每隔几个元素就会挑选出一个代表，再把这几个代表使用另外一级指针串起来。然后再在这些代表里面挑出二级代表，再串起来。<strong>最终形成了一个金字塔的结构。</strong></p>
+<p>想一下你目前所在的地理位置：亚洲 &gt; 中国 &gt; 某省 &gt; 某市 &gt; ….，<strong>就是这样一个结构！</strong></p>
+<h3 id="跳跃表"><a href="#跳跃表" class="headerlink" title="跳跃表"></a>跳跃表</h3><blockquote>
+<h4 id="力扣-1206-设计跳表"><a href="#力扣-1206-设计跳表" class="headerlink" title="力扣 1206. 设计跳表"></a><a href="https://leetcode-cn.com/problems/design-skiplist/">力扣 1206. 设计跳表</a></h4></blockquote>
+<p>是有序集合的底层实现之一。跳跃表是基于<strong>多指针有序链表</strong>实现的，可以看成多个有序链表。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200812165112.png" alt="beba612e-dc5b-4fc2-869d-0b23408ac90a"></p>
+<p>在查找时，从上层指针开始查找，找到对应的区间之后再到下一层去查找。下图演示了查找 22 的过程。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200812165116.png" alt="0ea37ee2-c224-4c79-b895-e131c6805c40"></p>
+<p>与红黑树等平衡树相比，跳跃表具有以下优点：</p>
+<ul>
+<li>插入速度非常快速，因为不需要进行旋转等操作来维护平衡性；</li>
+<li>更容易实现；</li>
+<li>支持无锁操作。</li>
+</ul>
+<h3 id="基础操作"><a href="#基础操作" class="headerlink" title="基础操作"></a>基础操作</h3><figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> ZADD books 9.0 <span class="string">&quot;think in java&quot;</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> ZADD books 8.9 <span class="string">&quot;java concurrency&quot;</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> ZADD books 8.6 <span class="string">&quot;java cookbook&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> ZRANGE books 0 -1     <span class="comment"># 按 score 排序列出，参数区间为排名范围</span></span></span><br><span class="line">1) &quot;java cookbook&quot;</span><br><span class="line">2) &quot;java concurrency&quot;</span><br><span class="line">3) &quot;think in java&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> ZREVRANGE books 0 -1  <span class="comment"># 按 score 逆序列出，参数区间为排名范围</span></span></span><br><span class="line">1) &quot;think in java&quot;</span><br><span class="line">2) &quot;java concurrency&quot;</span><br><span class="line">3) &quot;java cookbook&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> ZCARD books           <span class="comment"># 相当于 count()</span></span></span><br><span class="line">(integer) 3</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> ZSCORE books <span class="string">&quot;java concurrency&quot;</span>   <span class="comment"># 获取指定 value 的 score</span></span></span><br><span class="line">&quot;8.9000000000000004&quot;                # 内部 score 使用 double 类型进行存储，所以存在小数点精度问题</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> ZRANK books <span class="string">&quot;java concurrency&quot;</span>    <span class="comment"># 排名</span></span></span><br><span class="line">(integer) 1</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> ZRANGEBYSCORE books 0 8.91        <span class="comment"># 根据分值区间遍历 zset</span></span></span><br><span class="line">1) &quot;java cookbook&quot;</span><br><span class="line">2) &quot;java concurrency&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> ZRANGEBYSCORE books -inf 8.91 withscores  <span class="comment"># 根据分值区间 (-∞, 8.91] 遍历 zset，同时返回分值。inf 代表 infinite，无穷大的意思。</span></span></span><br><span class="line">1) &quot;java cookbook&quot;</span><br><span class="line">2) &quot;8.5999999999999996&quot;</span><br><span class="line">3) &quot;java concurrency&quot;</span><br><span class="line">4) &quot;8.9000000000000004&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> ZREM books <span class="string">&quot;java concurrency&quot;</span>             <span class="comment"># 删除 value</span></span></span><br><span class="line">(integer) 1</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> ZRANGE books 0 -1</span></span><br><span class="line">1) &quot;java cookbook&quot;</span><br><span class="line">2) &quot;think in java&quot;Copy to clipboardErrorCopied</span><br></pre></td></tr></table></figure>
+
+<h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><h2 id="计数器"><a href="#计数器" class="headerlink" title="计数器"></a>计数器</h2><p>可以对 String 进行自增自减运算，从而实现计数器功能。</p>
+<p>Redis 这种内存型数据库的读写性能非常高，很适合存储频繁读写的计数量。</p>
+<h2 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h2><p>将热点数据放到内存中，设置内存的最大使用量以及淘汰策略来保证缓存的命中率。</p>
+<h2 id="查找表"><a href="#查找表" class="headerlink" title="查找表"></a>查找表</h2><p>例如 DNS 记录就很适合使用 Redis 进行存储。</p>
+<p>查找表和缓存类似，也是利用了 Redis 快速的查找特性。但是查找表的内容不能失效，而缓存的内容可以失效，因为缓存不作为可靠的数据来源。</p>
+<h2 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h2><p>List 是一个双向链表，可以通过 lpush 和 rpop 写入和读取消息</p>
+<p>不过最好使用 Kafka、RabbitMQ 等消息中间件。</p>
+<h2 id="会话缓存"><a href="#会话缓存" class="headerlink" title="会话缓存"></a>会话缓存</h2><p>可以使用 Redis 来统一存储多台应用服务器的会话信息。</p>
+<p>当应用服务器不再存储用户的会话信息，也就不再具有状态，一个用户可以请求任意一个应用服务器，从而更容易实现高可用性以及可伸缩性。</p>
+<h2 id="分布式锁实现"><a href="#分布式锁实现" class="headerlink" title="分布式锁实现"></a>分布式锁实现</h2><p>在分布式场景下，无法使用单机环境下的锁来对多个节点上的进程进行同步。</p>
+<p>可以使用 Redis 自带的 SETNX 命令实现分布式锁，除此之外，还可以使用官方提供的 RedLock 分布式锁实现。</p>
+<h2 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h2><p>Set 可以实现交集、并集等操作，从而实现共同好友等功能。</p>
+<p>ZSet 可以实现有序性操作，从而实现排行榜等功能。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol>
+<li><a href="https://snailclimb.gitee.io/javaguide/#/docs/database/Redis/redis-collection/Redis(1)%E2%80%94%E2%80%945%E7%A7%8D%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84?id=%E4%B8%80%E3%80%81redis-%E7%AE%80%E4%BB%8B">Redis 简介 - Java Guide</a></li>
+<li><a href="https://cyc2018.github.io/CS-Notes/#/notes/Redis?id=%E4%B8%80%E3%80%81%E6%A6%82%E8%BF%B0">Redis 概述 - cyc 2018</a></li>
+<li><a href="https://redislabs.com/ebook/part-1-getting-started/chapter-1-getting-to-know-redis/1-2-what-redis-data-structures-look-like/">redislabs</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Redis</category>
+      </categories>
+      <tags>
+        <tag>数据结构</tag>
+        <tag>Redis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>守护进程、僵死进程与孤儿进程</title>
+    <url>/2020/08/18/Linux/%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E4%B8%8E%E5%AD%A4%E5%84%BF%E8%BF%9B%E7%A8%8B/</url>
+    <content><![CDATA[<p>守护进程、僵死进程与孤儿进程</p>
+<a id="more"></a>
+
+<h1 id="Linux-之守护进程、僵死进程与孤儿进程"><a href="#Linux-之守护进程、僵死进程与孤儿进程" class="headerlink" title="Linux 之守护进程、僵死进程与孤儿进程"></a>Linux 之守护进程、僵死进程与孤儿进程</h1><p>我们知道在unix/linux中，正常情况下，子进程是通过父进程创建的，子进程在创建新的进程。子进程的结束和父进程的运行是一个异步过程,即父进程永远无法预测子进程 到底什么时候结束。 当一个 进程完成它的工作终止之后，它的父进程需要调用wait()或者waitpid()系统调用取得子进程的终止状态。</p>
+<h2 id="守护进程"><a href="#守护进程" class="headerlink" title="守护进程"></a>守护进程</h2><p>Linux Daemon（守护进程）是运行在后台的一种特殊进程。它独立于控制终端并且周期性地执行某种任务或等待处理某些发生的事件。它不需要用户输入就能运行而且提供某种服务，不是对整个系统就是对某个用户程序提供服务。Linux系统的大多数服务器就是通过守护进程实现的。常见的守护进程包括系统日志进程syslogd、 web服务器httpd、邮件服务器sendmail和数据库服务器mysqld等。</p>
+<p>守护进程一般在系统启动时开始运行，除非强行终止，否则直到系统关机都保持运行。守护进程经常以超级用户（root）权限运行，因为它们要使用特殊的端口（1-1024）或访问某些特殊的资源。</p>
+<p>一个守护进程的父进程是init进程，因为它真正的父进程在fork出子进程后就先于子进程exit退出了，所以它是一个由init继承的孤儿进程。守护进程是非交互式程序，没有控制终端，所以任何输出，无论是向标准输出设备stdout还是标准出错设备stderr的输出都需要特殊处理。</p>
+<p>守护进程的名称通常以d结尾，比如sshd、xinetd、crond等</p>
+<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><h4 id="进程组"><a href="#进程组" class="headerlink" title="进程组"></a>进程组</h4><ol>
+<li>每个进程也属于一个进程组</li>
+<li>每个进程主都有一个进程组号，该号等于该进程组组长的PID号 .</li>
+<li>一个进程只能为它自己或子进程设置进程组ID号</li>
+</ol>
+<h4 id="会话期"><a href="#会话期" class="headerlink" title="会话期"></a>会话期</h4><p>会话期(session)是一个或多个进程组的集合。</p>
+<p>setsid()函数可以建立一个对话期：</p>
+<p>如果，调用setsid的进程不是一个进程组的组长，此函数创建一个新的会话期。</p>
+<p>(1)此进程变成该对话期的首进程</p>
+<p>(2)此进程变成一个新进程组的组长进程。</p>
+<p>(3)此进程没有控制终端，如果在调用setsid前，该进程有控制终端，那么与该终端的联系被解除。 如果该进程是一个进程组的组长，此函数返回错误。</p>
+<p>(4)为了保证这一点，我们先调用fork()然后exit()，此时只有子进程在运行。</p>
+<h3 id="编写守护进程的步骤"><a href="#编写守护进程的步骤" class="headerlink" title="编写守护进程的步骤"></a>编写守护进程的步骤</h3><p>（1）在父进程中执行fork并exit退出；</p>
+<p>（2）在子进程中调用setsid函数创建新的会话；</p>
+<p>（3）在子进程中调用chdir函数，让根目录 ”/” 成为子进程的工作目录；</p>
+<p>（4）在子进程中调用umask函数，设置进程的umask为0；</p>
+<p>（5）在子进程中关闭任何不需要的文件描述符;</p>
+<h2 id="僵尸进程"><a href="#僵尸进程" class="headerlink" title="僵尸进程"></a>僵尸进程</h2><p>一个进程使用fork创建子进程，如果子进程退出，而父进程并没有调用wait或waitpid获取子进程的状态信息，那么子进程的进程描述符仍然保存在系统中。这种进程称之为僵尸进程。</p>
+<h3 id="僵尸进程的危害"><a href="#僵尸进程的危害" class="headerlink" title="僵尸进程的危害"></a>僵尸进程的危害</h3><p>unix提供了一种机制可以保证只要父进程想知道子进程结束时的状态信息， 就可以得到。这种机制就是: 在每个进程退出的时候,内核释放该进程所有的资源,包括打开的文件,占用的内存等。 但是仍然为其保留一定的信息(包括进程号the process ID,退出状态the termination status of the process,运行时间the amount of CPU time taken by the process等)。直到父进程通过wait / waitpid来取时才释放。 但这样就导致了问题，如果进程不调用wait / waitpid的话， 那么保留的那段信息就不会释放，其进程号就会一直被占用，但是系统所能使用的进程号是有限的，如果大量的产生僵尸进程，将因为没有可用的进程号而导致系统不能产生新的进程. 此即为僵尸进程的危害，应当避免。</p>
+<p>任何一个子进程(init除外)在exit()之后，并非马上就消失掉，而是留下一个称为僵尸进程(Zombie)的数据结构，等待父进程处理。这是每个 子进程在结束时都要经过的阶段。如果子进程在exit()之后，父进程没有来得及处理，这时用ps命令就能看到子进程的状态是“Z”。如果父进程能及时 处理，可能用ps命令就来不及看到子进程的僵尸状态，但这并不等于子进程不经过僵尸状态。 如果父进程在子进程结束之前退出，则子进程将由init接管。init将会以父进程的身份对僵尸状态的子进程进行处理。</p>
+<p>一个进程如果只复制fork子进程而不负责对子进程进行wait()或是waitpid()调用来释放其所占有资源的话，那么就会产生很多的僵尸进程，如果要消灭系统中大量的僵死进程，只需要将其父进程杀死，此时所有的僵尸进程就会变成孤儿进程，从而被init所收养，这样init就会释放所有的僵尸进程所占有的资源，从而结束僵尸进程。</p>
+<h2 id="孤儿进程"><a href="#孤儿进程" class="headerlink" title="孤儿进程"></a>孤儿进程</h2><p>一个父进程退出，而它的一个或多个子进程还在运行，那么那些子进程将成为孤儿进程。孤儿进程将被init进程(进程号为1)所收养，并由init进程对它们完成状态收集工作。<br>由于孤儿进程会被init进程给收养，所以孤儿进程不会对系统造成危害。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
   </entry>
 </search>
