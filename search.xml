@@ -1477,7 +1477,7 @@
 <p>通过上面的图片，可以发现non-blocking IO和asynchronous IO的区别还是很明显的。在non-blocking IO中，虽然进程大部分时间都不会被block，但是它仍然要求进程去主动的check，并且当数据准备完成以后，也需要进程主动的再次调用recvfrom来将数据拷贝到用户内存。而asynchronous IO则完全不同。它就像是用户进程将整个IO操作交给了他人（kernel）完成，然后他人做完后发信号通知。在此期间，用户进程不需要去检查IO操作的状态，也不需要主动的去拷贝数据。</p>
 ]]></content>
       <categories>
-        <category>Liunx</category>
+        <category>Linux</category>
       </categories>
       <tags>
         <tag>Linux</tag>
@@ -1555,7 +1555,7 @@
 </ul>
 <p>如果一个状态不是安全的，需要拒绝进入这个状态。</p>
 <blockquote>
-<p>转载自 [cyc 2018 计算机操作系统 -死锁]([<a href="https://cyc2018.github.io/CS-Notes/#/notes/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%20-%20%E6%AD%BB%E9%94%81]">https://cyc2018.github.io/CS-Notes/#/notes/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%20-%20%E6%AD%BB%E9%94%81]</a>(<a href="https://cyc2018.github.io/CS-Notes/#/notes/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F">https://cyc2018.github.io/CS-Notes/#/notes/计算机操作系统</a> - 死锁))</p>
+<p>转载自 [cyc 2018 计算机操作系统 -死锁](<a href="https://cyc2018.github.io/CS-Notes/#/notes/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F">https://cyc2018.github.io/CS-Notes/#/notes/计算机操作系统</a> - 死锁)</p>
 </blockquote>
 ]]></content>
       <categories>
