@@ -904,316 +904,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Java基础概念</title>
-    <url>/2020/08/13/Java/java-basic-knowledge/</url>
-    <content><![CDATA[<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200814002005.png" alt="Java程序运行过程"></p>
-<a id="more"></a>
-
-<h2 id="JDK与JRE"><a href="#JDK与JRE" class="headerlink" title="JDK与JRE"></a>JDK与JRE</h2><p>JDK：是 Java Development Kit，它是功能齐全的 Java SDK。它拥有 JRE 所拥有的一切，还有编译器（javac）和工具（如 javadoc 和 jdb）。它能够创建和编译程序。</p>
-<p>JRE：是 Java 运行时环境。它是运行已编译 Java 程序所需的所有内容的集合，包括 Java 虚拟机（JVM），Java 类库，java 命令和其他的一些基础构件。但是，它不能用于创建新程序。</p>
-<h2 id="Java与c-的区别"><a href="#Java与c-的区别" class="headerlink" title="Java与c++的区别"></a>Java与c++的区别</h2><ul>
-<li>都是面向对象的语言，都支持封装、继承、多态</li>
-<li>Java不提供指针，来直接访问内存，程序内存更加安全</li>
-<li>Java 的类是单继承的，C++ 支持多重继承；虽然 <strong>Java 的类不可以多继承</strong>，但是接口可以多继承。</li>
-<li>Java 有自动内存管理机制，不需要程序员手动释放无用内存</li>
-<li><strong>在 C 语言中，字符串或字符数组最后都会有一个额外的字符‘\0’来表示结束。但是，Java 语言中没有结束符这一概念</strong></li>
-</ul>
-<h2 id="Java基本数据类型"><a href="#Java基本数据类型" class="headerlink" title="Java基本数据类型"></a>Java基本数据类型</h2><p><img src="http://my-blog-to-use.oss-cn-beijing.aliyuncs.com/18-9-15/86735519.jpg" alt="img"></p>
-<p>java中一共有8种基本数据类型，分别为：</p>
-<ol>
-<li>6种数字类型 ：byte、short、int、long、float、double</li>
-<li>1种字符类型：char</li>
-<li>1中布尔型：boolean。</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>基本类型</th>
-<th>位数</th>
-<th>字节</th>
-<th>默认值</th>
-<th>包装器类型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>int</td>
-<td>32</td>
-<td>4</td>
-<td>0</td>
-<td>Interger</td>
-</tr>
-<tr>
-<td>short</td>
-<td>16</td>
-<td>2</td>
-<td>0</td>
-<td>Short</td>
-</tr>
-<tr>
-<td>long</td>
-<td>64</td>
-<td>8</td>
-<td>0L</td>
-<td>Long</td>
-</tr>
-<tr>
-<td>byte</td>
-<td>8</td>
-<td>1</td>
-<td>0</td>
-<td>Byte</td>
-</tr>
-<tr>
-<td>char</td>
-<td>16</td>
-<td>2</td>
-<td>‘u0000’</td>
-<td>Character</td>
-</tr>
-<tr>
-<td>float</td>
-<td>32</td>
-<td>4</td>
-<td>0f</td>
-<td>Float</td>
-</tr>
-<tr>
-<td>double</td>
-<td>64</td>
-<td>8</td>
-<td>0d</td>
-<td>Double</td>
-</tr>
-<tr>
-<td>boolean</td>
-<td>1</td>
-<td></td>
-<td>false</td>
-<td>Boolean</td>
-</tr>
-</tbody></table>
-<p>注意：</p>
-<ol>
-<li>Java 里使用 long 类型的数据一定要在数值后面加上 <strong>L</strong>，否则将作为整型解析：</li>
-<li><code>char a = &#39;h&#39;</code>char :单引号，<code>String a = &quot;hello&quot;</code> :双引号</li>
-</ol>
-<p>Java 基本类型的包装类的大部分都实现了常量池技术，即 Byte, Short, Integer, Long, Character, Boolean；前面 4 种包装类默认创建了数值[-128，127] 的相应类型的缓存数据，Character创建了数值在[0,127]范围的缓存数据，Boolean 直接返回True Or False。如果超出对应范围仍然会去创建新的对象。</p>
-<h2 id="Java常见关键字"><a href="#Java常见关键字" class="headerlink" title="Java常见关键字"></a>Java常见关键字</h2><p>关键字是被赋予特殊含义的标识符</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>访问控制</td>
-<td>private</td>
-<td>protected</td>
-<td>public</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>类，方法和变量修饰符</td>
-<td>abstract</td>
-<td>class</td>
-<td>extends</td>
-<td>final</td>
-<td>implements</td>
-<td>interface</td>
-<td>native</td>
-</tr>
-<tr>
-<td></td>
-<td>new</td>
-<td>static</td>
-<td>strictfp</td>
-<td>synchronized</td>
-<td>transient</td>
-<td>volatile</td>
-<td></td>
-</tr>
-<tr>
-<td>程序控制</td>
-<td>break</td>
-<td>continue</td>
-<td>return</td>
-<td>do</td>
-<td>while</td>
-<td>if</td>
-<td>else</td>
-</tr>
-<tr>
-<td></td>
-<td>for</td>
-<td>instanceof</td>
-<td>switch</td>
-<td>case</td>
-<td>default</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>错误处理</td>
-<td>try</td>
-<td>catch</td>
-<td>throw</td>
-<td>throws</td>
-<td>finally</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>包相关</td>
-<td>import</td>
-<td>package</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>基本类型</td>
-<td>boolean</td>
-<td>byte</td>
-<td>char</td>
-<td>double</td>
-<td>float</td>
-<td>int</td>
-<td>long</td>
-</tr>
-<tr>
-<td></td>
-<td>short</td>
-<td>null</td>
-<td>true</td>
-<td>false</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>变量引用</td>
-<td>super</td>
-<td>this</td>
-<td>void</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>保留字</td>
-<td>goto</td>
-<td>const</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<h2 id="Java泛型"><a href="#Java泛型" class="headerlink" title="Java泛型"></a>Java泛型</h2><p>Java 泛型（generics）是 JDK 5 中引入的一个新特性, 泛型提供了编译时类型安全检测机制，该机制允许程序员在编译时检测到非法的类型。泛型的本质是参数化类型，也就是说所操作的数据类型被指定为一个参数。</p>
-<p>泛型一般有三种使用方式:泛型类、泛型接口、泛型方法。</p>
-<ol>
-<li>泛型类</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//此处T可以随便写为任意标识，常见的如T、E、K、V等形式的参数常用于表示泛型</span></span><br><span class="line"><span class="comment">//在实例化泛型类时，必须指定T的具体类型</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Generic</span>&lt;<span class="title">T</span>&gt;</span>&#123; </span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> T key;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Generic</span><span class="params">(T key)</span> </span>&#123; </span><br><span class="line">        <span class="keyword">this</span>.key = key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">getKey</span><span class="params">()</span></span>&#123; </span><br><span class="line">        <span class="keyword">return</span> key;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//实例化泛型类</span></span><br><span class="line">Generic&lt;Integer&gt; genericInteger = <span class="keyword">new</span> Generic&lt;Integer&gt;(<span class="number">123456</span>);</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>泛型接口</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Generator</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">method</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//泛型接口的实现，不知指定类型</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GeneratorImpl</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">Generator</span>&lt;<span class="title">T</span>&gt;</span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">method</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//泛型接口的实现，指定类型</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GeneratorImpl</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">Generator</span>&lt;<span class="title">String</span>&gt;</span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">method</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>泛型方法</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> &lt; E &gt; <span class="function"><span class="keyword">void</span> <span class="title">printArray</span><span class="params">( E[] inputArray )</span></span></span><br><span class="line"><span class="function">   </span>&#123;         </span><br><span class="line">         <span class="keyword">for</span> ( E element : inputArray )&#123;        </span><br><span class="line">            System.out.printf( <span class="string">&quot;%s &quot;</span>, element );</span><br><span class="line">         &#125;</span><br><span class="line">         System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用</span></span><br><span class="line"><span class="comment">// 创建不同类型数组： Integer, Double 和 Character</span></span><br><span class="line">Integer[] intArray = &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> &#125;;</span><br><span class="line">String[] stringArray = &#123; <span class="string">&quot;Hello&quot;</span>, <span class="string">&quot;World&quot;</span> &#125;;</span><br><span class="line">printArray( intArray  ); </span><br><span class="line">printArray( stringArray  ); </span><br></pre></td></tr></table></figure>
-
-<p>Java泛型中常用的通配符：</p>
-<ul>
-<li>?  表示不确定的java类型   </li>
-<li>T : 表示一个具体的java类型</li>
-<li>K V ：分别代表java键值中的Key Value</li>
-<li>E ：代表元素Element</li>
-</ul>
-<p>更多资源：<a href="https://juejin.im/post/5d5789d26fb9a06ad0056bd9">《聊一聊-JAVA 泛型中的通配符 T，E，K，V，？》</a></p>
-<h2 id="Java函数"><a href="#Java函数" class="headerlink" title="Java函数"></a>Java函数</h2><p>函数返回值：方法的返回值是指我们获取到的某个方法体中的代码执行后产生的结果！（前提是该方法可能产生结果）。返回值的作用是接收出结果，使得它可以用于其他的操作！</p>
-<p><strong>按值调用(call by value)表示方法接收的是调用者提供的值，引用调用（call by reference)表示方法接收的是调用者提供的变量地址。一个方法可以修改传递引用所对应的变量值，而不能修改传递值调用所对应的变量值。</strong> 它用来描述各种程序设计语言（不只是 Java)中方法参数传递方式。</p>
-<p>Java程序设计语言总是采用<strong>按值调用</strong>，也就是说，方法得到的是所有参数值的一个拷贝，也就是说，方法不能修改传递给它的任何参数变量的内容。</p>
-<p><strong>基本数据类型的参数</strong></p>
-<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200813220251.jpeg" alt="example 1 "></p>
-<p><strong>引用类型的参数</strong></p>
-<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200813220258.jpeg" alt="example 2"></p>
-<h2 id="重载与重写的区别"><a href="#重载与重写的区别" class="headerlink" title="重载与重写的区别"></a>重载与重写的区别</h2><blockquote>
-<p><strong>重载</strong>就是同样的一个方法能够根据输入数据的不同，做出不同的处理</p>
-<p><strong>重写</strong>就是当子类继承自父类的相同方法，输入数据一样，但要做出有别于父类的响应时，你就要覆盖父类方法</p>
-</blockquote>
-<p>重载发生在同一个类中，方法名必须相同，参数类型不同、个数不同、顺序不同，方法返回值和访问修饰符可以不同。<strong>重载就是同一个类中多个同名方法根据不同的传参来执行不同的逻辑处理。</strong></p>
-<p>重写发生在运行期，是子类对父类的允许访问的方法的实现过程进行重新编写。<strong>重写就是子类对父类方法的重新改造，外部样子不能改变，内部逻辑可以改变</strong></p>
-<table>
-<thead>
-<tr>
-<th>区别点</th>
-<th>重载方法</th>
-<th>重写方法</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>发生范围</td>
-<td>同一个类</td>
-<td>子类 中</td>
-</tr>
-<tr>
-<td>参数列表</td>
-<td>必须修改</td>
-<td>一定不能修改</td>
-</tr>
-<tr>
-<td>返回类型</td>
-<td>可修改</td>
-<td>一定不能修改</td>
-</tr>
-<tr>
-<td>异常</td>
-<td>可修改</td>
-<td>可以减少或删除，一定不能抛出新的或者更广的异常</td>
-</tr>
-<tr>
-<td>访问修饰符</td>
-<td>可修改</td>
-<td>一定不能做更严格的限制（可以降低限制）</td>
-</tr>
-<tr>
-<td>发生阶段</td>
-<td>编译期</td>
-<td>运行期</td>
-</tr>
-</tbody></table>
-<h2 id="深拷贝与浅拷贝"><a href="#深拷贝与浅拷贝" class="headerlink" title="深拷贝与浅拷贝"></a>深拷贝与浅拷贝</h2><ol>
-<li><strong>浅拷贝</strong>：对基本数据类型进行值传递，对引用数据类型进行引用传递般的拷贝，此为浅拷贝。</li>
-<li><strong>深拷贝</strong>：对基本数据类型进行值传递，对引用数据类型，创建一个新的对象，并复制其内容，此为深拷贝。</li>
-</ol>
-<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200813225954.jpeg" alt="deep and shallow copy"></p>
-]]></content>
-      <categories>
-        <category>Java</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>JVM内存模型</title>
     <url>/2020/08/17/Java/JVM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/</url>
     <content><![CDATA[<p>Java 虚拟机在执行 Java 程序的过程中会把它管理的内存划分成若干个不同的数据区域。JDK. 1.8 和之前的版本略有不同。</p>
@@ -1666,8 +1356,318 @@
       </tags>
   </entry>
   <entry>
+    <title>Java基础概念</title>
+    <url>/2020/08/13/Java/Java-basic-knowledge/</url>
+    <content><![CDATA[<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200814002005.png" alt="Java程序运行过程"></p>
+<a id="more"></a>
+
+<h2 id="JDK与JRE"><a href="#JDK与JRE" class="headerlink" title="JDK与JRE"></a>JDK与JRE</h2><p>JDK：是 Java Development Kit，它是功能齐全的 Java SDK。它拥有 JRE 所拥有的一切，还有编译器（javac）和工具（如 javadoc 和 jdb）。它能够创建和编译程序。</p>
+<p>JRE：是 Java 运行时环境。它是运行已编译 Java 程序所需的所有内容的集合，包括 Java 虚拟机（JVM），Java 类库，java 命令和其他的一些基础构件。但是，它不能用于创建新程序。</p>
+<h2 id="Java与c-的区别"><a href="#Java与c-的区别" class="headerlink" title="Java与c++的区别"></a>Java与c++的区别</h2><ul>
+<li>都是面向对象的语言，都支持封装、继承、多态</li>
+<li>Java不提供指针，来直接访问内存，程序内存更加安全</li>
+<li>Java 的类是单继承的，C++ 支持多重继承；虽然 <strong>Java 的类不可以多继承</strong>，但是接口可以多继承。</li>
+<li>Java 有自动内存管理机制，不需要程序员手动释放无用内存</li>
+<li><strong>在 C 语言中，字符串或字符数组最后都会有一个额外的字符‘\0’来表示结束。但是，Java 语言中没有结束符这一概念</strong></li>
+</ul>
+<h2 id="Java基本数据类型"><a href="#Java基本数据类型" class="headerlink" title="Java基本数据类型"></a>Java基本数据类型</h2><p><img src="http://my-blog-to-use.oss-cn-beijing.aliyuncs.com/18-9-15/86735519.jpg" alt="img"></p>
+<p>java中一共有8种基本数据类型，分别为：</p>
+<ol>
+<li>6种数字类型 ：byte、short、int、long、float、double</li>
+<li>1种字符类型：char</li>
+<li>1中布尔型：boolean。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>基本类型</th>
+<th>位数</th>
+<th>字节</th>
+<th>默认值</th>
+<th>包装器类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>int</td>
+<td>32</td>
+<td>4</td>
+<td>0</td>
+<td>Interger</td>
+</tr>
+<tr>
+<td>short</td>
+<td>16</td>
+<td>2</td>
+<td>0</td>
+<td>Short</td>
+</tr>
+<tr>
+<td>long</td>
+<td>64</td>
+<td>8</td>
+<td>0L</td>
+<td>Long</td>
+</tr>
+<tr>
+<td>byte</td>
+<td>8</td>
+<td>1</td>
+<td>0</td>
+<td>Byte</td>
+</tr>
+<tr>
+<td>char</td>
+<td>16</td>
+<td>2</td>
+<td>‘u0000’</td>
+<td>Character</td>
+</tr>
+<tr>
+<td>float</td>
+<td>32</td>
+<td>4</td>
+<td>0f</td>
+<td>Float</td>
+</tr>
+<tr>
+<td>double</td>
+<td>64</td>
+<td>8</td>
+<td>0d</td>
+<td>Double</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>1</td>
+<td></td>
+<td>false</td>
+<td>Boolean</td>
+</tr>
+</tbody></table>
+<p>注意：</p>
+<ol>
+<li>Java 里使用 long 类型的数据一定要在数值后面加上 <strong>L</strong>，否则将作为整型解析：</li>
+<li><code>char a = &#39;h&#39;</code>char :单引号，<code>String a = &quot;hello&quot;</code> :双引号</li>
+</ol>
+<p>Java 基本类型的包装类的大部分都实现了常量池技术，即 Byte, Short, Integer, Long, Character, Boolean；前面 4 种包装类默认创建了数值[-128，127] 的相应类型的缓存数据，Character创建了数值在[0,127]范围的缓存数据，Boolean 直接返回True Or False。如果超出对应范围仍然会去创建新的对象。</p>
+<h2 id="Java常见关键字"><a href="#Java常见关键字" class="headerlink" title="Java常见关键字"></a>Java常见关键字</h2><p>关键字是被赋予特殊含义的标识符</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>访问控制</td>
+<td>private</td>
+<td>protected</td>
+<td>public</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>类，方法和变量修饰符</td>
+<td>abstract</td>
+<td>class</td>
+<td>extends</td>
+<td>final</td>
+<td>implements</td>
+<td>interface</td>
+<td>native</td>
+</tr>
+<tr>
+<td></td>
+<td>new</td>
+<td>static</td>
+<td>strictfp</td>
+<td>synchronized</td>
+<td>transient</td>
+<td>volatile</td>
+<td></td>
+</tr>
+<tr>
+<td>程序控制</td>
+<td>break</td>
+<td>continue</td>
+<td>return</td>
+<td>do</td>
+<td>while</td>
+<td>if</td>
+<td>else</td>
+</tr>
+<tr>
+<td></td>
+<td>for</td>
+<td>instanceof</td>
+<td>switch</td>
+<td>case</td>
+<td>default</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>错误处理</td>
+<td>try</td>
+<td>catch</td>
+<td>throw</td>
+<td>throws</td>
+<td>finally</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>包相关</td>
+<td>import</td>
+<td>package</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>基本类型</td>
+<td>boolean</td>
+<td>byte</td>
+<td>char</td>
+<td>double</td>
+<td>float</td>
+<td>int</td>
+<td>long</td>
+</tr>
+<tr>
+<td></td>
+<td>short</td>
+<td>null</td>
+<td>true</td>
+<td>false</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>变量引用</td>
+<td>super</td>
+<td>this</td>
+<td>void</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>保留字</td>
+<td>goto</td>
+<td>const</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="Java泛型"><a href="#Java泛型" class="headerlink" title="Java泛型"></a>Java泛型</h2><p>Java 泛型（generics）是 JDK 5 中引入的一个新特性, 泛型提供了编译时类型安全检测机制，该机制允许程序员在编译时检测到非法的类型。泛型的本质是参数化类型，也就是说所操作的数据类型被指定为一个参数。</p>
+<p>泛型一般有三种使用方式:泛型类、泛型接口、泛型方法。</p>
+<ol>
+<li>泛型类</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//此处T可以随便写为任意标识，常见的如T、E、K、V等形式的参数常用于表示泛型</span></span><br><span class="line"><span class="comment">//在实例化泛型类时，必须指定T的具体类型</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Generic</span>&lt;<span class="title">T</span>&gt;</span>&#123; </span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> T key;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Generic</span><span class="params">(T key)</span> </span>&#123; </span><br><span class="line">        <span class="keyword">this</span>.key = key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">getKey</span><span class="params">()</span></span>&#123; </span><br><span class="line">        <span class="keyword">return</span> key;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//实例化泛型类</span></span><br><span class="line">Generic&lt;Integer&gt; genericInteger = <span class="keyword">new</span> Generic&lt;Integer&gt;(<span class="number">123456</span>);</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>泛型接口</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Generator</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">method</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//泛型接口的实现，不知指定类型</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GeneratorImpl</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">Generator</span>&lt;<span class="title">T</span>&gt;</span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">method</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//泛型接口的实现，指定类型</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GeneratorImpl</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">Generator</span>&lt;<span class="title">String</span>&gt;</span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">method</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>泛型方法</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> &lt; E &gt; <span class="function"><span class="keyword">void</span> <span class="title">printArray</span><span class="params">( E[] inputArray )</span></span></span><br><span class="line"><span class="function">   </span>&#123;         </span><br><span class="line">         <span class="keyword">for</span> ( E element : inputArray )&#123;        </span><br><span class="line">            System.out.printf( <span class="string">&quot;%s &quot;</span>, element );</span><br><span class="line">         &#125;</span><br><span class="line">         System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用</span></span><br><span class="line"><span class="comment">// 创建不同类型数组： Integer, Double 和 Character</span></span><br><span class="line">Integer[] intArray = &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> &#125;;</span><br><span class="line">String[] stringArray = &#123; <span class="string">&quot;Hello&quot;</span>, <span class="string">&quot;World&quot;</span> &#125;;</span><br><span class="line">printArray( intArray  ); </span><br><span class="line">printArray( stringArray  ); </span><br></pre></td></tr></table></figure>
+
+<p>Java泛型中常用的通配符：</p>
+<ul>
+<li>?  表示不确定的java类型   </li>
+<li>T : 表示一个具体的java类型</li>
+<li>K V ：分别代表java键值中的Key Value</li>
+<li>E ：代表元素Element</li>
+</ul>
+<p>更多资源：<a href="https://juejin.im/post/5d5789d26fb9a06ad0056bd9">《聊一聊-JAVA 泛型中的通配符 T，E，K，V，？》</a></p>
+<h2 id="Java函数"><a href="#Java函数" class="headerlink" title="Java函数"></a>Java函数</h2><p>函数返回值：方法的返回值是指我们获取到的某个方法体中的代码执行后产生的结果！（前提是该方法可能产生结果）。返回值的作用是接收出结果，使得它可以用于其他的操作！</p>
+<p><strong>按值调用(call by value)表示方法接收的是调用者提供的值，引用调用（call by reference)表示方法接收的是调用者提供的变量地址。一个方法可以修改传递引用所对应的变量值，而不能修改传递值调用所对应的变量值。</strong> 它用来描述各种程序设计语言（不只是 Java)中方法参数传递方式。</p>
+<p>Java程序设计语言总是采用<strong>按值调用</strong>，也就是说，方法得到的是所有参数值的一个拷贝，也就是说，方法不能修改传递给它的任何参数变量的内容。</p>
+<p><strong>基本数据类型的参数</strong></p>
+<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200813220251.jpeg" alt="example 1 "></p>
+<p><strong>引用类型的参数</strong></p>
+<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200813220258.jpeg" alt="example 2"></p>
+<h2 id="重载与重写的区别"><a href="#重载与重写的区别" class="headerlink" title="重载与重写的区别"></a>重载与重写的区别</h2><blockquote>
+<p><strong>重载</strong>就是同样的一个方法能够根据输入数据的不同，做出不同的处理</p>
+<p><strong>重写</strong>就是当子类继承自父类的相同方法，输入数据一样，但要做出有别于父类的响应时，你就要覆盖父类方法</p>
+</blockquote>
+<p>重载发生在同一个类中，方法名必须相同，参数类型不同、个数不同、顺序不同，方法返回值和访问修饰符可以不同。<strong>重载就是同一个类中多个同名方法根据不同的传参来执行不同的逻辑处理。</strong></p>
+<p>重写发生在运行期，是子类对父类的允许访问的方法的实现过程进行重新编写。<strong>重写就是子类对父类方法的重新改造，外部样子不能改变，内部逻辑可以改变</strong></p>
+<table>
+<thead>
+<tr>
+<th>区别点</th>
+<th>重载方法</th>
+<th>重写方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>发生范围</td>
+<td>同一个类</td>
+<td>子类 中</td>
+</tr>
+<tr>
+<td>参数列表</td>
+<td>必须修改</td>
+<td>一定不能修改</td>
+</tr>
+<tr>
+<td>返回类型</td>
+<td>可修改</td>
+<td>一定不能修改</td>
+</tr>
+<tr>
+<td>异常</td>
+<td>可修改</td>
+<td>可以减少或删除，一定不能抛出新的或者更广的异常</td>
+</tr>
+<tr>
+<td>访问修饰符</td>
+<td>可修改</td>
+<td>一定不能做更严格的限制（可以降低限制）</td>
+</tr>
+<tr>
+<td>发生阶段</td>
+<td>编译期</td>
+<td>运行期</td>
+</tr>
+</tbody></table>
+<h2 id="深拷贝与浅拷贝"><a href="#深拷贝与浅拷贝" class="headerlink" title="深拷贝与浅拷贝"></a>深拷贝与浅拷贝</h2><ol>
+<li><strong>浅拷贝</strong>：对基本数据类型进行值传递，对引用数据类型进行引用传递般的拷贝，此为浅拷贝。</li>
+<li><strong>深拷贝</strong>：对基本数据类型进行值传递，对引用数据类型，创建一个新的对象，并复制其内容，此为深拷贝。</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200813225954.jpeg" alt="deep and shallow copy"></p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Redis中的数据结构及使用场景</title>
-    <url>/2020/08/12/redis/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%8F%8A%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/</url>
+    <url>/2020/08/12/Redis/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%8F%8A%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/</url>
     <content><![CDATA[<blockquote>
 <p><strong>“Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache and message broker.”</strong> —— Redis是一个开放源代码（BSD许可）的内存中数据结构存储，用作数据库，缓存和消息代理。 <em>(摘自官网)</em></p>
 </blockquote>
