@@ -1740,4 +1740,223 @@
         <tag>Java</tag>
       </tags>
   </entry>
+  <entry>
+    <title>常见的锁</title>
+    <url>/2020/08/20/Java/%E5%B8%B8%E8%A7%81%E7%9A%84%E9%94%81/</url>
+    <content><![CDATA[<p>本文总结了锁的种类，应用场景</p>
+<a id="more"></a>
+
+<p>这篇文章介绍各种锁的分类。介绍的内容如下：</p>
+<ul>
+<li>公平锁/非公平锁</li>
+<li>可重入锁</li>
+<li>独享锁/共享锁</li>
+<li>互斥锁/读写锁</li>
+<li>乐观锁/悲观锁</li>
+<li>分段锁</li>
+<li>偏向锁/轻量级锁/重量级锁</li>
+<li>自旋锁 </li>
+</ul>
+<p>上面是很多锁的名词，这些分类并不是全是指锁的状态，有的指锁的特性，有的指锁的设计，下面总结的内容是对每个锁的名词进行一定的解释。</p>
+<h2 id="公平锁-非公平锁"><a href="#公平锁-非公平锁" class="headerlink" title="公平锁/非公平锁"></a><strong>公平锁/非公平锁</strong></h2><p>公平锁是指多个线程按照申请锁的顺序来获取锁。<br>非公平锁是指多个线程获取锁的顺序并不是按照申请锁的顺序，有可能后申请的线程比先申请的线程优先获取锁。有可能，会造成优先级反转或者饥饿现象。<br>对于Java ReentrantLock而言，通过构造函数指定该锁是否是公平锁，默认是非公平锁。非公平锁的优点在于吞吐量比公平锁大。<br>对于Synchronized而言，也是一种非公平锁。由于其并不像ReentrantLock是通过AQS(AbstractQueuedSynchronizer)的来实现线程调度，所以并没有任何办法使其变成公平锁。</p>
+<h2 id="可重入锁"><a href="#可重入锁" class="headerlink" title="可重入锁"></a>可重入锁</h2><p>可重入锁又名递归锁，是指在同一个线程在外层方法获取锁的时候，在进入内层方法会自动获取锁。说的有点抽象，下面会有一个代码的示例。<br>对于Java ReentrantLock而言, 他的名字就可以看出是一个可重入锁，其名字是Re entrant Lock重新进入锁。<br>对于Synchronized而言,也是一个可重入锁。可重入锁的一个好处是可一定程度避免死锁。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">setA</span> <span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">    setB();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">setB</span> <span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码就是一个可重入锁的一个特点，如果不是可重入锁的话，setB可能不会被当前线程执行，可能造成死锁。</p>
+<h2 id="独享锁-共享锁"><a href="#独享锁-共享锁" class="headerlink" title="独享锁/共享锁"></a>独享锁/共享锁</h2><ul>
+<li>独享锁是指该锁一次只能被一个线程所持有。</li>
+<li>共享锁是指该锁可被多个线程所持有。<br>对于Java ReentrantLock而言，其是独享锁。但是对于Lock的另一个实现类ReadWriteLock，其读锁是共享锁，其写锁是独享锁。<br>读锁的共享锁可保证并发读是非常高效的，读写，写读 ，写写的过程是互斥的。<br>独享锁与共享锁也是通过AQS来实现的，通过实现不同的方法，来实现独享或者共享。<br>对于Synchronized而言，当然是独享锁。</li>
+</ul>
+<h2 id="互斥锁-读写锁"><a href="#互斥锁-读写锁" class="headerlink" title="互斥锁/读写锁"></a>互斥锁/读写锁</h2><p>上面讲的独享锁/共享锁就是一种广义的说法，互斥锁/读写锁就是具体的实现。</p>
+<ul>
+<li>互斥锁在Java中的具体实现就是ReentrantLock</li>
+<li>读写锁在Java中的具体实现就是ReadWriteLock</li>
+</ul>
+<h2 id="乐观锁-悲观锁"><a href="#乐观锁-悲观锁" class="headerlink" title="乐观锁/悲观锁"></a>乐观锁/悲观锁</h2><p>乐观锁与悲观锁不是指具体的什么类型的锁，而是指看待并发同步的角度。</p>
+<ul>
+<li>悲观锁认为对于同一个数据的并发操作，一定是会发生修改的，哪怕没有修改，也会认为修改。因此对于同一个数据的并发操作，悲观锁采取加锁的形式。悲观的认为，不加锁的并发操作一定会出问题。</li>
+<li>乐观锁则认为对于同一个数据的并发操作，是不会发生修改的。在更新数据的时候，会采用尝试更新，不断重新的方式更新数据。乐观的认为，不加锁的并发操作是没有事情的。<br>从上面的描述我们可以看出，悲观锁适合写操作非常多的场景，乐观锁适合读操作非常多的场景，不加锁会带来大量的性能提升。<br>悲观锁在Java中的使用，就是利用各种锁。<br>乐观锁在Java中的使用，是无锁编程，常常采用的是CAS算法，典型的例子就是原子类，通过CAS自旋实现原子操作的更新。</li>
+</ul>
+<h2 id="分段锁"><a href="#分段锁" class="headerlink" title="分段锁"></a>分段锁</h2><p>分段锁其实是一种锁的设计，并不是具体的一种锁，对于ConcurrentHashMap而言，其并发的实现就是通过分段锁的形式来实现高效的并发操作。</p>
+<p>我们以ConcurrentHashMap来说一下分段锁的含义以及设计思想，ConcurrentHashMap中的分段锁称为Segment，它即类似于HashMap（JDK7与JDK8中HashMap的实现）的结构，即内部拥有一个Entry数组，数组中的每个元素又是一个链表；同时又是一个ReentrantLock（Segment继承了ReentrantLock)。</p>
+<p>当需要put元素的时候，并不是对整个hashmap进行加锁，而是先通过hashcode来知道他要放在那一个分段中，然后对这个分段进行加锁，所以当多线程put的时候，只要不是放在一个分段中，就实现了真正的并行的插入。</p>
+<p>但是，在统计size的时候，可就是获取hashmap全局信息的时候，就需要获取所有的分段锁才能统计。</p>
+<p>分段锁的设计目的是细化锁的粒度，当操作不需要更新整个数组的时候，就仅仅针对数组中的一项进行加锁操作。</p>
+<h2 id="偏向锁-轻量级锁-重量级锁"><a href="#偏向锁-轻量级锁-重量级锁" class="headerlink" title="偏向锁/轻量级锁/重量级锁"></a>偏向锁/轻量级锁/重量级锁</h2><p>这三种锁是指锁的状态，并且是针对Synchronized。在Java 5通过引入锁升级的机制来实现高效Synchronized。这三种锁的状态是通过对象监视器在对象头中的字段来表明的。</p>
+<ul>
+<li>偏向锁是指一段同步代码一直被一个线程所访问，那么该线程会自动获取锁。降低获取锁的代价。</li>
+<li>轻量级锁是指当锁是偏向锁的时候，被另一个线程所访问，偏向锁就会升级为轻量级锁，其他线程会通过自旋的形式尝试获取锁，不会阻塞，提高性能。</li>
+<li>重量级锁是指当锁为轻量级锁的时候，另一个线程虽然是自旋，但自旋不会一直持续下去，当自旋一定次数的时候，还没有获取到锁，就会进入阻塞，该锁膨胀为重量级锁。重量级锁会让其他申请的线程进入阻塞，性能降低。</li>
+</ul>
+<h2 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h2><p>在Java中，自旋锁是指尝试获取锁的线程不会立即阻塞，而是采用循环的方式去尝试获取锁，这样的好处是减少线程上下文切换的消耗，缺点是循环会消耗CPU。<br>典型的自旋锁实现的例子，可以参考自旋锁的实现</p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>并发</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Redis安装及配置</title>
+    <url>/2020/08/12/Redis/Redis%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<p>本文记载了redis的安装及配置流程和常用指令</p>
+<a id="more"></a>
+
+<p>[toc]</p>
+<h2 id="redis安装及配置"><a href="#redis安装及配置" class="headerlink" title="redis安装及配置"></a>redis安装及配置</h2><blockquote>
+<p>转载自 <a href="https://www.linode.com/docs/databases/redis/install-and-configure-redis-on-centos-7/">在CentOS 7上安装和配置Redis</a></p>
+</blockquote>
+<h3 id="redis安装"><a href="#redis安装" class="headerlink" title="redis安装"></a>redis安装</h3><p>在本部分中，您将添加<a href="https://fedoraproject.org/wiki/EPEL">EPEL</a>存储库，然后使用它来安装redis。</p>
+<ol>
+<li><p>添加EPEL存储库，并更新YUM以确认您的更改：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo yum install epel-release</span><br><span class="line">sudo yum update</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装Redis：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo yum install redis</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动Redis：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo systemctl start redis</span><br></pre></td></tr></table></figure>
+
+<p><strong>可选</strong>：要在启动时自动启动Redis：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo systemctl enable redis</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h4 id="验证安装"><a href="#验证安装" class="headerlink" title="验证安装"></a>验证安装</h4><p>验证Redis是否在运行<code>redis-cli</code>：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">redis-cli ping</span><br></pre></td></tr></table></figure>
+
+<p>如果Redis正在运行，它将返回：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">PONG</span><br></pre></td></tr></table></figure>
+
+<h3 id="redis配置"><a href="#redis配置" class="headerlink" title="redis配置"></a>redis配置</h3><p>在本部分中，您将为redis配置一些基本的持久性和调整选项。</p>
+<h4 id="持久性选项"><a href="#持久性选项" class="headerlink" title="持久性选项"></a>持久性选项</h4><p>redis提供了两种磁盘持久性选项：</p>
+<ul>
+<li>以指定的时间间隔（RDB）制作的数据集的时间点快照。</li>
+<li>服务器（AOF）执行的所有写操作的仅追加日志。</li>
+</ul>
+<p>每个选项都有其自身的优缺点，redis文档中对此进行了详细说明。为了最大程度地提高数据安全性，请考虑同时运行两种持久性方法。</p>
+<p>由于默认情况下启用了时间点快照持久性，因此您只需要设置AOF持久性：</p>
+<ol>
+<li><p>确保在中的<code>appendonly</code>和<code>appendfsync</code>设置中设置了以下值<code>redis.conf</code>（位于<code>/etc/redis.conf</code>）：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">appendonly yes</span><br><span class="line">appendfsync everysec</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重新启动Redis：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo systemctl restart redis</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h4 id="基本系统调整"><a href="#基本系统调整" class="headerlink" title="基本系统调整"></a>基本系统调整</h4><p>为了提高redis的性能，请将Linux内核的过量使用内存设置设置为1：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo sysctl vm.overcommit_memory&#x3D;1</span><br></pre></td></tr></table></figure>
+
+<p>这将立即更改过量使用的内存设置，但更改不会在重新启动后持续存在。要使其永久存在，请添加<code>vm.overcommit_memory = 1</code>到<code>/etc/sysctl.conf</code>。</p>
+<h4 id="密码设置"><a href="#密码设置" class="headerlink" title="密码设置"></a>密码设置</h4><p> redis没有实现访问控制这个功能，但是它提供了一个轻量级的认证方式，可以编辑<code>redis.conf</code>配置来启用认证。</p>
+<p>Redis默认配置是不需要密码认证的，也就是说只要连接的redis服务器的host和port正确，就可以连接使用。这在安全性上会有一定的问题，所以需要启用redis的认证密码，增加redis服务器的安全性。</p>
+<ol>
+<li><p>修改配置文件<code>redis.conf</code>( 需要重启redis)</p>
+<p>找到<code>requirepass</code>。requirepass  这个就是配置redis访问密码的参数；</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">requirepass myPassword</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用<code>CONFIG set requirepass myPassword </code>(不需要重启redis)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; CONFIG set requirepass myPassword  #设置密码</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; quit    #退出客户端</span><br><span class="line">&gt;redis-cli                    #重新链接客户端</span><br><span class="line">127.0.0.1:6379&gt; setnx dd1 ddf3      #设置一个字符串</span><br><span class="line">(error) NOAUTH Authentication required.    #错误返回，需要认证</span><br><span class="line">127.0.0.1:6379&gt; auth chen    #开始认证</span><br><span class="line">(error) ERR invalid password        #密码错误了，因为是myPassword</span><br><span class="line">127.0.0.1:6379&gt; auth chentaobao      #密码正确</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; setnx dd 1123</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; CONFIG set requirepass &quot;&quot; #清空密码</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; config get requirepass    #查看密码</span><br><span class="line">1) &quot;requirepass&quot;</span><br><span class="line">2) &quot;&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在redis集群中使用认证密码<br> 如果redis服务器，使用了集群。除了在master中配置密码外，也需要在slave中进行相应配置。在slave的配置文件中找到如下行，去掉注释并修改与master相同的密码即可：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">masterauth master-password</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h4 id="密码认证"><a href="#密码认证" class="headerlink" title="密码认证"></a>密码认证</h4><ol>
+<li>在登录时，使用 -a 参数输入登陆密码；</li>
+<li>在连接后，使用auth进行验证；</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; auth test123456</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; config get requirepass</span><br><span class="line">1) &quot;requirepass&quot;</span><br><span class="line">2) &quot;myPassword&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="redis命令"><a href="#redis命令" class="headerlink" title="redis命令"></a>redis命令</h2><p>redis 命令用于在 redis 服务上执行操作。</p>
+<h3 id="在本机上执行命令"><a href="#在本机上执行命令" class="headerlink" title="在本机上执行命令"></a>在本机上执行命令</h3><p>语法：</p>
+<p>redis 客户端的基本语法为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ redis-cli</span><br></pre></td></tr></table></figure>
+
+<p>实例：</p>
+<p>以下实例讲解了如何启动 redis 客户端：</p>
+<p>启动 redis 服务器，打开终端并输入命令 <strong>redis-cli</strong>，该命令会连接本地的 redis 服务。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ redis-cli</span><br><span class="line">redis 127.0.0.1:6379&gt;</span><br><span class="line">redis 127.0.0.1:6379&gt; PING</span><br><span class="line"></span><br><span class="line">PONG</span><br></pre></td></tr></table></figure>
+
+<p>在以上实例中我们连接到本地的 redis 服务并执行 <strong>PING</strong> 命令，该命令用于检测 redis 服务是否启动。</p>
+<h3 id="在远程服务上执行命令"><a href="#在远程服务上执行命令" class="headerlink" title="在远程服务上执行命令"></a>在远程服务上执行命令</h3><p>如果需要在远程 redis 服务上执行命令，同样我们使用的也是 <strong>redis-cli</strong> 命令。</p>
+<p>语法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ redis-cli -h host -p port -a password</span><br></pre></td></tr></table></figure>
+
+<p>实例：</p>
+<p>以下实例演示了如何连接到主机为 127.0.0.1，端口为 6379 ，密码为 mypass 的 redis 服务上。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$redis-cli -h 127.0.0.1 -p 6379 -a &quot;mypass&quot;</span><br><span class="line">redis 127.0.0.1:6379&gt;</span><br><span class="line">redis 127.0.0.1:6379&gt; PING</span><br><span class="line">PONG</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Redis</category>
+      </categories>
+      <tags>
+        <tag>Redis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Redis常见面试题</title>
+    <url>/2020/08/12/Redis/Redis%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98/</url>
+    <content><![CDATA[<p>Redis常见面试题总结</p>
+<a id="more"></a>
+
+<h2 id="简单介绍一下Redis？"><a href="#简单介绍一下Redis？" class="headerlink" title="简单介绍一下Redis？"></a>简单介绍一下Redis？</h2><blockquote>
+<p><strong>Redis</strong> 是一个开源，高级的键值存储和一个适用的解决方案，用于构建高性能，可扩展的 Web 应用程序。<strong>Redis</strong> 也被作者戏称为 <em>数据结构服务器</em> ，这意味着使用者可以通过一些命令，基于带有 TCP 套接字的简单 <em>服务器-客户端</em> 协议来访问一组 <strong>可变数据结构</strong> 。在 Redis 中都采用键值对的方式，只不过对应的数据结构不一样罢了。可以存储键和五种不同类型的值之间的映射。键的类型只能为字符串，值支持五种数据类型：字符串、列表、集合、散列表、有序集合。</p>
+</blockquote>
+<p><strong>Redis 就是一个使用 C 语言开发的数据库</strong>，不过与传统数据库不同的是 <strong>Redis 的数据是存在内存中的</strong> ，也就是它是内存数据库，所以读写速度非常快，因此 Redis 被广泛应用于缓存方向。</p>
+<p>另外，<strong>Redis 除了做缓存之外，Redis 也经常用来做分布式锁，甚至是消息队列。</strong></p>
+<p><strong>Redis 提供了多种数据类型来支持不同的业务场景。Redis 还支持事务 、持久化、Lua 脚本、多种集群方案。</strong></p>
+<h2 id="分布式缓存常见技术选型方案有哪些？"><a href="#分布式缓存常见技术选型方案有哪些？" class="headerlink" title="分布式缓存常见技术选型方案有哪些？"></a>分布式缓存常见技术选型方案有哪些？</h2><p>分布式缓存的话，使用的比较多的主要是 <strong>Memcached</strong> 和 <strong>Redis</strong>(主流)。</p>
+<p>分布式缓存主要解决的是<strong>单机缓存的容量受服务器限制并且无法保存通用的信息</strong>的问题。因为，本地缓存只在当前服务里有效，比如如果你部署了两个相同的服务，他们两者之间的缓存数据是无法共同的。</p>
+<h2 id="说一下-Redis-和-Memcached-的区别和共同点"><a href="#说一下-Redis-和-Memcached-的区别和共同点" class="headerlink" title="说一下 Redis 和 Memcached 的区别和共同点"></a>说一下 Redis 和 Memcached 的区别和共同点</h2><p><strong>共同点</strong> ：</p>
+<ol>
+<li>都是基于内存的数据库，一般都用来当做缓存使用。</li>
+<li>都有过期策略。</li>
+<li>两者的性能都非常高。</li>
+</ol>
+<p><strong>区别</strong> ：</p>
+<ol>
+<li><strong>Redis 支持更丰富的数据类型（支持更复杂的应用场景）</strong>。Redis 不仅仅支持简单的 k/v 类型的数据，同时还提供 list，set，zset，hash 等数据结构的存储。Memcached 只支持最简单的 k/v 数据类型。</li>
+<li><strong>Redis 支持数据的持久化，可以将内存中的数据保持在磁盘中，重启的时候可以再次加载进行使用。</strong>而 Memcached 把数据全部存在内存之中。</li>
+<li><strong>Redis 有灾难恢复机制。</strong> 因为可以把缓存中的数据持久化到磁盘上。</li>
+<li><strong>Redis 在服务器内存使用完之后，可以将不用的数据放到磁盘上。但是。</strong>Memcached 在服务器内存使用完之后，就会直接报异常。</li>
+<li><strong>Redis 目前是原生支持 cluster 模式。</strong> Memcached 没有原生的集群模式，需要依靠客户端来实现往集群中分片写入数据。</li>
+<li><strong>Redis 使用单线程的多路 IO 复用模型。(Redis 6.0 引入了多线程 IO ）</strong> Memcached 是多线程，非阻塞 IO 复用的网络模型。</li>
+<li><strong>Redis 支持发布订阅模型、Lua 脚本、事务等功能。</strong>Memcached 不支持。并且，Redis 支持更多的编程语言。</li>
+<li><strong>Redis 同时使用了惰性删除与定期删除。</strong>Memcached过期数据的删除策略只用了惰性删除。</li>
+</ol>
+<h2 id="缓存数据的处理流程是怎样的？"><a href="#缓存数据的处理流程是怎样的？" class="headerlink" title="缓存数据的处理流程是怎样的？"></a>缓存数据的处理流程是怎样的？</h2><p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200811171117.png" alt="缓存的处理流程"></p>
+<ol>
+<li>如果用户请求的数据在缓存中就直接返回。</li>
+<li>缓存中不存在的话就看数据库中是否存在。</li>
+<li>数据库中存在的话就更新缓存中的数据。</li>
+<li>数据库中不存在的话就返回空数据。</li>
+</ol>
+<h2 id="为什么要用Redis-为什么要用缓存？"><a href="#为什么要用Redis-为什么要用缓存？" class="headerlink" title="为什么要用Redis/为什么要用缓存？"></a>为什么要用Redis/为什么要用缓存？</h2><blockquote>
+<p>高性能 高并发  使用缓存主要是为了提升用户体验以及应对更多的用户</p>
+</blockquote>
+<p><strong>高性能：</strong></p>
+<p>假如用户第一次访问数据库中的某些数据的话，这个过程是比较慢，毕竟是从硬盘中读取的。但是，如果说，用户访问的数据属于高频数据并且不会经常改变的话，那么我们就可以很放心地将该用户访问的数据存在缓存中。</p>
+<p><strong>这样有什么好处呢？</strong> 那就是保证用户下一次再访问这些数据的时候就可以直接从缓存中获取了。操作缓存就是直接操作内存，所以速度相当快。</p>
+<p>不过，要保持数据库和缓存中的数据的一致性。 如果数据库中的对应数据改变了，同步改变缓存中相应的数据即可！</p>
+<p><strong>高并发：</strong></p>
+<p>一般像 MySQL 这类的数据库的 QPS 大概都在 1 w 左右（4 核 8 G） ，但是使用 Redis 缓存之后很容易达到 10 w+，甚至最高能达到 30 w+（就单机 redis 的情况，redis 集群的话会更高）。</p>
+<blockquote>
+<p>QPS（Query Per Second）：服务器每秒可以执行的查询次数；</p>
+</blockquote>
+<p>所以，直接操作缓存能够承受的数据库请求数量是远远大于直接访问数据库的，所以我们可以考虑把数据库中的部分数据转移到缓存中去，这样用户的一部分请求会直接到缓存这里而不用经过数据库。进而，我们也就提高的系统整体的并发。</p>
+]]></content>
+      <categories>
+        <category>Redis</category>
+      </categories>
+      <tags>
+        <tag>面试</tag>
+        <tag>Redis</tag>
+      </tags>
+  </entry>
 </search>

@@ -22,20 +22,23 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="守护进程、僵尸进程与孤儿进程">
+  <meta name="description" content="Redis常见面试题总结">
 <meta property="og:type" content="article">
-<meta property="og:title" content="守护进程、僵尸进程与孤儿进程">
-<meta property="og:url" content="http://yoursite.com/2020/08/18/Linux/%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E4%B8%8E%E5%AD%A4%E5%84%BF%E8%BF%9B%E7%A8%8B/index.html">
+<meta property="og:title" content="Redis常见面试题">
+<meta property="og:url" content="http://yoursite.com/2020/08/12/Redis/Redis%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98/index.html">
 <meta property="og:site_name" content="Mumon&#39;s Blogs">
-<meta property="og:description" content="守护进程、僵尸进程与孤儿进程">
+<meta property="og:description" content="Redis常见面试题总结">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-08-18T05:58:51.000Z">
-<meta property="article:modified_time" content="2020-08-20T15:33:59.192Z">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200811171117.png">
+<meta property="article:published_time" content="2020-08-12T09:08:12.194Z">
+<meta property="article:modified_time" content="2020-08-20T15:45:02.913Z">
 <meta property="article:author" content="mumon">
-<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="面试">
+<meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200811171117.png">
 
-<link rel="canonical" href="http://yoursite.com/2020/08/18/Linux/%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E4%B8%8E%E5%AD%A4%E5%84%BF%E8%BF%9B%E7%A8%8B/">
+<link rel="canonical" href="http://yoursite.com/2020/08/12/Redis/Redis%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98/">
 
 
 <script id="page-configurations">
@@ -48,7 +51,7 @@
   };
 </script>
 
-  <title>守护进程、僵尸进程与孤儿进程 | Mumon's Blogs</title>
+  <title>Redis常见面试题 | Mumon's Blogs</title>
   
 
 
@@ -187,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/18/Linux/%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E4%B8%8E%E5%AD%A4%E5%84%BF%E8%BF%9B%E7%A8%8B/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/12/Redis/Redis%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -200,7 +203,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          守护进程、僵尸进程与孤儿进程
+          Redis常见面试题
         </h1>
 
         <div class="post-meta">
@@ -210,14 +213,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-08-18 13:58:51" itemprop="dateCreated datePublished" datetime="2020-08-18T13:58:51+08:00">2020-08-18</time>
+              <time title="创建时间：2020-08-12 17:08:12" itemprop="dateCreated datePublished" datetime="2020-08-12T17:08:12+08:00">2020-08-12</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-08-20 23:33:59" itemprop="dateModified" datetime="2020-08-20T23:33:59+08:00">2020-08-20</time>
+                <time title="修改时间：2020-08-20 23:45:02" itemprop="dateModified" datetime="2020-08-20T23:45:02+08:00">2020-08-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -225,7 +228,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
                 </span>
             </span>
 
@@ -240,36 +243,54 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>守护进程、僵尸进程与孤儿进程</p>
+        <p>Redis常见面试题总结</p>
 <a id="more"></a>
 
-<h1 id="Linux-之守护进程、僵尸进程与孤儿进程"><a href="#Linux-之守护进程、僵尸进程与孤儿进程" class="headerlink" title="Linux 之守护进程、僵尸进程与孤儿进程"></a>Linux 之守护进程、僵尸进程与孤儿进程</h1><p>我们知道在unix/linux中，正常情况下，子进程是通过父进程创建的，子进程在创建新的进程。子进程的结束和父进程的运行是一个异步过程,即父进程永远无法预测子进程 到底什么时候结束。 当一个 进程完成它的工作终止之后，它的父进程需要调用wait()或者waitpid()系统调用取得子进程的终止状态。</p>
-<h2 id="守护进程"><a href="#守护进程" class="headerlink" title="守护进程"></a>守护进程</h2><p>Linux Daemon（守护进程）是运行在后台的一种特殊进程。它独立于控制终端并且周期性地执行某种任务或等待处理某些发生的事件。它不需要用户输入就能运行而且提供某种服务，不是对整个系统就是对某个用户程序提供服务。Linux系统的大多数服务器就是通过守护进程实现的。常见的守护进程包括系统日志进程syslogd、 web服务器httpd、邮件服务器sendmail和数据库服务器mysqld等。</p>
-<p>守护进程一般在系统启动时开始运行，除非强行终止，否则直到系统关机都保持运行。守护进程经常以超级用户（root）权限运行，因为它们要使用特殊的端口（1-1024）或访问某些特殊的资源。</p>
-<p>一个守护进程的父进程是init进程，因为它真正的父进程在fork出子进程后就先于子进程exit退出了，所以它是一个由init继承的孤儿进程。守护进程是非交互式程序，没有控制终端，所以任何输出，无论是向标准输出设备stdout还是标准出错设备stderr的输出都需要特殊处理。</p>
-<p>守护进程的名称通常以d结尾，比如sshd、xinetd、crond等</p>
-<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><h4 id="进程组"><a href="#进程组" class="headerlink" title="进程组"></a>进程组</h4><ol>
-<li>每个进程也属于一个进程组</li>
-<li>每个进程主都有一个进程组号，该号等于该进程组组长的PID号 .</li>
-<li>一个进程只能为它自己或子进程设置进程组ID号</li>
+<h2 id="简单介绍一下Redis？"><a href="#简单介绍一下Redis？" class="headerlink" title="简单介绍一下Redis？"></a>简单介绍一下Redis？</h2><blockquote>
+<p><strong>Redis</strong> 是一个开源，高级的键值存储和一个适用的解决方案，用于构建高性能，可扩展的 Web 应用程序。<strong>Redis</strong> 也被作者戏称为 <em>数据结构服务器</em> ，这意味着使用者可以通过一些命令，基于带有 TCP 套接字的简单 <em>服务器-客户端</em> 协议来访问一组 <strong>可变数据结构</strong> 。在 Redis 中都采用键值对的方式，只不过对应的数据结构不一样罢了。可以存储键和五种不同类型的值之间的映射。键的类型只能为字符串，值支持五种数据类型：字符串、列表、集合、散列表、有序集合。</p>
+</blockquote>
+<p><strong>Redis 就是一个使用 C 语言开发的数据库</strong>，不过与传统数据库不同的是 <strong>Redis 的数据是存在内存中的</strong> ，也就是它是内存数据库，所以读写速度非常快，因此 Redis 被广泛应用于缓存方向。</p>
+<p>另外，<strong>Redis 除了做缓存之外，Redis 也经常用来做分布式锁，甚至是消息队列。</strong></p>
+<p><strong>Redis 提供了多种数据类型来支持不同的业务场景。Redis 还支持事务 、持久化、Lua 脚本、多种集群方案。</strong></p>
+<h2 id="分布式缓存常见技术选型方案有哪些？"><a href="#分布式缓存常见技术选型方案有哪些？" class="headerlink" title="分布式缓存常见技术选型方案有哪些？"></a>分布式缓存常见技术选型方案有哪些？</h2><p>分布式缓存的话，使用的比较多的主要是 <strong>Memcached</strong> 和 <strong>Redis</strong>(主流)。</p>
+<p>分布式缓存主要解决的是<strong>单机缓存的容量受服务器限制并且无法保存通用的信息</strong>的问题。因为，本地缓存只在当前服务里有效，比如如果你部署了两个相同的服务，他们两者之间的缓存数据是无法共同的。</p>
+<h2 id="说一下-Redis-和-Memcached-的区别和共同点"><a href="#说一下-Redis-和-Memcached-的区别和共同点" class="headerlink" title="说一下 Redis 和 Memcached 的区别和共同点"></a>说一下 Redis 和 Memcached 的区别和共同点</h2><p><strong>共同点</strong> ：</p>
+<ol>
+<li>都是基于内存的数据库，一般都用来当做缓存使用。</li>
+<li>都有过期策略。</li>
+<li>两者的性能都非常高。</li>
 </ol>
-<h4 id="会话期"><a href="#会话期" class="headerlink" title="会话期"></a>会话期</h4><p>会话期(session)是一个或多个进程组的集合。</p>
-<p>setsid()函数可以建立一个对话期：</p>
-<p>如果，调用setsid的进程不是一个进程组的组长，此函数创建一个新的会话期。</p>
-<p>(1)此进程变成该对话期的首进程</p>
-<p>(2)此进程变成一个新进程组的组长进程。</p>
-<p>(3)此进程没有控制终端，如果在调用setsid前，该进程有控制终端，那么与该终端的联系被解除。 如果该进程是一个进程组的组长，此函数返回错误。</p>
-<p>(4)为了保证这一点，我们先调用fork()然后exit()，此时只有子进程在运行。</p>
-<h3 id="编写守护进程的步骤"><a href="#编写守护进程的步骤" class="headerlink" title="编写守护进程的步骤"></a>编写守护进程的步骤</h3><p>（1）在父进程中执行fork并exit退出；</p>
-<p>（2）在子进程中调用setsid函数创建新的会话；</p>
-<p>（3）在子进程中调用chdir函数，让根目录 ”/” 成为子进程的工作目录；</p>
-<p>（4）在子进程中调用umask函数，设置进程的umask为0；</p>
-<p>（5）在子进程中关闭任何不需要的文件描述符;</p>
-<h2 id="僵尸进程"><a href="#僵尸进程" class="headerlink" title="僵尸进程"></a>僵尸进程</h2><p>一个进程使用fork创建子进程，如果子进程退出，而父进程并没有调用wait或waitpid获取子进程的状态信息，那么子进程的进程描述符仍然保存在系统中。这种进程称之为僵尸进程。</p>
-<h3 id="僵尸进程的危害"><a href="#僵尸进程的危害" class="headerlink" title="僵尸进程的危害"></a>僵尸进程的危害</h3><p>unix提供了一种机制可以保证只要父进程想知道子进程结束时的状态信息， 就可以得到。这种机制就是: 在每个进程退出的时候,内核释放该进程所有的资源,包括打开的文件,占用的内存等。 但是仍然为其保留一定的信息(包括进程号the process ID,退出状态the termination status of the process,运行时间the amount of CPU time taken by the process等)。直到父进程通过wait / waitpid来取时才释放。 但这样就导致了问题，如果进程不调用wait / waitpid的话， 那么保留的那段信息就不会释放，其进程号就会一直被占用，但是系统所能使用的进程号是有限的，如果大量的产生僵尸进程，将因为没有可用的进程号而导致系统不能产生新的进程. 此即为僵尸进程的危害，应当避免。</p>
-<p>任何一个子进程(init除外)在exit()之后，并非马上就消失掉，而是留下一个称为僵尸进程(Zombie)的数据结构，等待父进程处理。这是每个 子进程在结束时都要经过的阶段。如果子进程在exit()之后，父进程没有来得及处理，这时用ps命令就能看到子进程的状态是“Z”。如果父进程能及时 处理，可能用ps命令就来不及看到子进程的僵尸状态，但这并不等于子进程不经过僵尸状态。 如果父进程在子进程结束之前退出，则子进程将由init接管。init将会以父进程的身份对僵尸状态的子进程进行处理。</p>
-<p>一个进程如果只复制fork子进程而不负责对子进程进行wait()或是waitpid()调用来释放其所占有资源的话，那么就会产生很多的僵尸进程，如果要消灭系统中大量的僵死进程，只需要将其父进程杀死，此时所有的僵尸进程就会变成孤儿进程，从而被init所收养，这样init就会释放所有的僵尸进程所占有的资源，从而结束僵尸进程。</p>
-<h2 id="孤儿进程"><a href="#孤儿进程" class="headerlink" title="孤儿进程"></a>孤儿进程</h2><p>一个父进程退出，而它的一个或多个子进程还在运行，那么那些子进程将成为孤儿进程。孤儿进程将被init进程(进程号为1)所收养，并由init进程对它们完成状态收集工作。<br>由于孤儿进程会被init进程给收养，所以孤儿进程不会对系统造成危害。</p>
+<p><strong>区别</strong> ：</p>
+<ol>
+<li><strong>Redis 支持更丰富的数据类型（支持更复杂的应用场景）</strong>。Redis 不仅仅支持简单的 k/v 类型的数据，同时还提供 list，set，zset，hash 等数据结构的存储。Memcached 只支持最简单的 k/v 数据类型。</li>
+<li><strong>Redis 支持数据的持久化，可以将内存中的数据保持在磁盘中，重启的时候可以再次加载进行使用。</strong>而 Memcached 把数据全部存在内存之中。</li>
+<li><strong>Redis 有灾难恢复机制。</strong> 因为可以把缓存中的数据持久化到磁盘上。</li>
+<li><strong>Redis 在服务器内存使用完之后，可以将不用的数据放到磁盘上。但是。</strong>Memcached 在服务器内存使用完之后，就会直接报异常。</li>
+<li><strong>Redis 目前是原生支持 cluster 模式。</strong> Memcached 没有原生的集群模式，需要依靠客户端来实现往集群中分片写入数据。</li>
+<li><strong>Redis 使用单线程的多路 IO 复用模型。(Redis 6.0 引入了多线程 IO ）</strong> Memcached 是多线程，非阻塞 IO 复用的网络模型。</li>
+<li><strong>Redis 支持发布订阅模型、Lua 脚本、事务等功能。</strong>Memcached 不支持。并且，Redis 支持更多的编程语言。</li>
+<li><strong>Redis 同时使用了惰性删除与定期删除。</strong>Memcached过期数据的删除策略只用了惰性删除。</li>
+</ol>
+<h2 id="缓存数据的处理流程是怎样的？"><a href="#缓存数据的处理流程是怎样的？" class="headerlink" title="缓存数据的处理流程是怎样的？"></a>缓存数据的处理流程是怎样的？</h2><p><img src="https://cdn.jsdelivr.net/gh/wzymumon/Picture-Resources@master/img/20200811171117.png" alt="缓存的处理流程"></p>
+<ol>
+<li>如果用户请求的数据在缓存中就直接返回。</li>
+<li>缓存中不存在的话就看数据库中是否存在。</li>
+<li>数据库中存在的话就更新缓存中的数据。</li>
+<li>数据库中不存在的话就返回空数据。</li>
+</ol>
+<h2 id="为什么要用Redis-为什么要用缓存？"><a href="#为什么要用Redis-为什么要用缓存？" class="headerlink" title="为什么要用Redis/为什么要用缓存？"></a>为什么要用Redis/为什么要用缓存？</h2><blockquote>
+<p>高性能 高并发  使用缓存主要是为了提升用户体验以及应对更多的用户</p>
+</blockquote>
+<p><strong>高性能：</strong></p>
+<p>假如用户第一次访问数据库中的某些数据的话，这个过程是比较慢，毕竟是从硬盘中读取的。但是，如果说，用户访问的数据属于高频数据并且不会经常改变的话，那么我们就可以很放心地将该用户访问的数据存在缓存中。</p>
+<p><strong>这样有什么好处呢？</strong> 那就是保证用户下一次再访问这些数据的时候就可以直接从缓存中获取了。操作缓存就是直接操作内存，所以速度相当快。</p>
+<p>不过，要保持数据库和缓存中的数据的一致性。 如果数据库中的对应数据改变了，同步改变缓存中相应的数据即可！</p>
+<p><strong>高并发：</strong></p>
+<p>一般像 MySQL 这类的数据库的 QPS 大概都在 1 w 左右（4 核 8 G） ，但是使用 Redis 缓存之后很容易达到 10 w+，甚至最高能达到 30 w+（就单机 redis 的情况，redis 集群的话会更高）。</p>
+<blockquote>
+<p>QPS（Query Per Second）：服务器每秒可以执行的查询次数；</p>
+</blockquote>
+<p>所以，直接操作缓存能够承受的数据库请求数量是远远大于直接访问数据库的，所以我们可以考虑把数据库中的部分数据转移到缓存中去，这样用户的一部分请求会直接到缓存这里而不用经过数据库。进而，我们也就提高的系统整体的并发。</p>
 
     </div>
 
@@ -279,7 +300,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag"># 面试</a>
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
           </div>
 
         
@@ -288,12 +310,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/08/18/Linux/Linux%E7%9A%84%E4%BA%94%E7%A7%8DIO%E6%A8%A1%E5%9E%8B/" rel="prev" title="Linux五种IO模型">
-      <i class="fa fa-chevron-left"></i> Linux五种IO模型
+    <a href="/2020/08/12/Redis/Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%8F%8A%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/" rel="prev" title="Redis中的数据结构及使用场景">
+      <i class="fa fa-chevron-left"></i> Redis中的数据结构及使用场景
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/08/18/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/%E6%AD%BB%E9%94%81/" rel="next" title="死锁">
-      死锁 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/08/12/Redis/Redis%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/" rel="next" title="Redis安装及配置">
+      Redis安装及配置 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -353,7 +375,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux-%E4%B9%8B%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E3%80%81%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E4%B8%8E%E5%AD%A4%E5%84%BF%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">Linux 之守护进程、僵尸进程与孤儿进程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">守护进程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%BB%84"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">进程组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E6%9C%9F"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">会话期</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.1.2.</span> <span class="nav-text">编写守护进程的步骤</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">僵尸进程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%8D%B1%E5%AE%B3"><span class="nav-number">1.2.1.</span> <span class="nav-text">僵尸进程的危害</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%A4%E5%84%BF%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">孤儿进程</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8BRedis%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">简单介绍一下Redis？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E5%B8%B8%E8%A7%81%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B%E6%96%B9%E6%A1%88%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">分布式缓存常见技术选型方案有哪些？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B4%E4%B8%80%E4%B8%8B-Redis-%E5%92%8C-Memcached-%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E5%85%B1%E5%90%8C%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text">说一下 Redis 和 Memcached 的区别和共同点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%EF%BC%9F"><span class="nav-number">4.</span> <span class="nav-text">缓存数据的处理流程是怎样的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8Redis-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8%E7%BC%93%E5%AD%98%EF%BC%9F"><span class="nav-number">5.</span> <span class="nav-text">为什么要用Redis&#x2F;为什么要用缓存？</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
