@@ -208,7 +208,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-08-24 23:21:04 / 修改时间：23:23:44" itemprop="dateCreated datePublished" datetime="2020-08-24T23:21:04+08:00">2020-08-24</time>
+              <time title="创建时间：2020-08-24 23:21:04 / 修改时间：23:27:08" itemprop="dateCreated datePublished" datetime="2020-08-24T23:21:04+08:00">2020-08-24</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -231,107 +231,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h1><blockquote>
-<p>HTTP状态码部分！！！！！！</p>
-<p>GET POST状态码</p>
-</blockquote>
-<ol>
-<li><p>谈谈你对 HTTP 的理解</p>
-</li>
-<li><p>HTTP 的状态码</p>
-<blockquote>
-<p>3开头的要多看一些</p>
-</blockquote>
-</li>
-<li><p>你自己有接触过 304 的案例吗？介绍缓存机制</p>
-</li>
-<li><p>Get Post 的区别</p>
-<blockquote>
-</blockquote>
-</li>
-<li><p>写 HTTP GET 报文 </p>
-</li>
-<li><p>TCP UDP的区别</p>
-</li>
-</ol>
-<ol start="7">
-<li><p>TCP三次握手，四次挥手</p>
-</li>
-<li><p>为什么要四次挥手？     </p>
-</li>
-<li><p>forward和redirect 了解吗 说说看，redirect的话客户端要请求几次 </p>
-</li>
-<li><p>tcp连接过程（三次握手）</p>
-<blockquote>
-</blockquote>
-</li>
-<li><p>tcp连接过程中可以发数据吗 </p>
-</li>
-<li><p>GET和POST有什么区别</p>
-</li>
-<li><p>POST可以当GET用吗 </p>
-</li>
-<li><p>四次挥手过程</p>
-</li>
-<li><p>Close wait作用</p>
-</li>
-<li><p>第2、3次挥手能不能合并 </p>
-</li>
-<li><p>HTTP GET和POST区别 </p>
-</li>
-</ol>
-<h1 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h1><ol>
-<li>协程和线程的区别 </li>
-<li>用户态和内核态区别（！！！！！）</li>
-<li>协程的调度是怎么做的 </li>
-<li>进程的概念（）</li>
-<li>进程通信的方式 </li>
-<li>管道在哪些场景会用到 </li>
-<li>golang 的协程如何传递信息 </li>
-<li>channel 的约束条件是什么？是为了保证安全吗？（安全 &amp; 避免锁竞争） </li>
-<li>channel 和互斥锁、读写锁在什么场景用更合适 </li>
-<li><strong>对互斥锁的了解</strong></li>
-<li>进程调度算法；</li>
-<li>进程与线程的区别； </li>
-<li>进线程区别 </li>
-<li>调度算法</li>
-<li>协程</li>
-<li>虚拟内存</li>
-</ol>
-<h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><ol>
-<li>数据库索引</li>
-<li>数据库隔离级别</li>
-<li>数据库的原理了解过么，比如事务隔离级别是怎么实现的（no）</li>
-<li>数据库索引结构、聚簇索引和非聚簇索引区别、B+树结构、为什么不用B树或二叉树 </li>
-<li>事务四大特性、事务隔离级别以及分别解决什么问题</li>
-<li>幻读、如何解决幻读</li>
-</ol>
-<h1 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h1><ol>
-<li><p>Java中实现加锁的方式、sychronized、锁升级过程、底层AQS实现原理</p>
-</li>
-<li><p>平时如何实现线程安全，ConcurrentHashMap</p>
-</li>
-<li><p>线程状态、线程池有哪些参数、运行机制、<strong>四种拒绝策略</strong> ？</p>
-</li>
-<li><p>ArrayList和LinkedList的 get(0)方法那个更快点（？？？） </p>
-</li>
-<li><p>讲讲对面向对象的理解（solid）？</p>
-</li>
-<li><p>线程池为什么有一个阻塞队列，为什么一定要是阻塞的？ </p>
-</li>
-<li><p>HashMap到1.8之后改头插法为尾插法，避免了死循环，具体的原理是什么 ？</p>
-</li>
-<li><p>mysql建议使用自增的id作为主键？</p>
-</li>
-<li><p>Spring用过么，aop讲讲看</p>
-</li>
-<li><p>出了个aop的题，如下 </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span> </span>&#123; </span><br><span class="line">    <span class="meta">@Post</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">x</span><span class="params">()</span> </span>&#123;     </span><br><span class="line">        System.out.print(<span class="string">&quot;x&quot;</span>);</span><br><span class="line">        <span class="keyword">this</span>.y</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Post</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">y</span><span class="params">()</span> </span>&#123;     </span><br><span class="line">        System.out.print(<span class="string">&quot;y&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-
-<p>问：new A().x(); 输出什么 </p>
-</li>
-</ol>
-
+          <p>to be continued……..</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/08/24/temp/%E7%8C%BF%E8%BE%85%E5%AF%BC%E9%9D%A2%E7%BB%8F/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
