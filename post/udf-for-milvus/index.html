@@ -1,0 +1,131 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><title>Udf for Milvus - OSPP 2022 - Even - A super concise theme for Hugo</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=author content="mumon"><meta name=description content="基于 Web Assembly (WASM)为 Milvus 实现 UDF milvus 官方网站：milvus/milvus-repos 开发仓库：milvus-ospp-2022-wasm-udf"><meta name=keywords content="Hugo,theme,even"><meta name=generator content="Hugo 0.98.0 with theme even"><link rel=canonical href=http://localhost:1313/post/udf-for-milvus/><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link href=/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous><meta property="og:title" content="Udf for Milvus - OSPP 2022"><meta property="og:description" content="基于 Web Assembly (WASM)为 Milvus 实现 UDF milvus 官方网站：milvus/milvus-repos 开发仓库：milvus-ospp-2022-wasm-udf"><meta property="og:type" content="article"><meta property="og:url" content="http://localhost:1313/post/udf-for-milvus/"><meta property="article:section" content="post"><meta property="article:published_time" content="2023-03-01T16:55:24+08:00"><meta property="article:modified_time" content="2023-03-01T16:55:24+08:00"><meta itemprop=name content="Udf for Milvus - OSPP 2022"><meta itemprop=description content="基于 Web Assembly (WASM)为 Milvus 实现 UDF milvus 官方网站：milvus/milvus-repos 开发仓库：milvus-ospp-2022-wasm-udf"><meta itemprop=datePublished content="2023-03-01T16:55:24+08:00"><meta itemprop=dateModified content="2023-03-01T16:55:24+08:00"><meta itemprop=wordCount content="3157"><meta itemprop=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="Udf for Milvus - OSPP 2022"><meta name=twitter:description content="基于 Web Assembly (WASM)为 Milvus 实现 UDF milvus 官方网站：milvus/milvus-repos 开发仓库：milvus-ospp-2022-wasm-udf"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script>
+<script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]--></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>Even</a></div><div class=mobile-navbar-icon><span></span>
+<span></span>
+<span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>Home</li></a><a href=/post/><li class=mobile-menu-item>Archives</li></a><a href=/tags/><li class=mobile-menu-item>Tags</li></a><a href=/categories/><li class=mobile-menu-item>Categories</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo>Even</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>Home</a></li><li class=menu-item><a class=menu-item-link href=/post/>Archives</a></li><li class=menu-item><a class=menu-item-link href=/tags/>Tags</a></li><li class=menu-item><a class=menu-item-link href=/categories/>Categories</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>Udf for Milvus - OSPP 2022</h1><div class=post-meta><span class=post-time>2023-03-01</span></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>Contents</h2><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><a href=#项目背景>项目背景</a></li><li><a href=#项目技术栈>项目技术栈</a></li><li><a href=#方案描述>方案描述</a><ul><li><a href=#函数存储><strong>函数存储</strong></a></li><li><a href=#函数解析>函数解析</a></li><li><a href=#函数执行>函数执行</a></li></ul></li><li><a href=#项目产出>项目产出</a><ul><li><a href=#项目demo>项目Demo</a></li></ul></li><li><a href=#遇到的困难>遇到的困难</a></li><li><a href=#项目收获>项目收获</a></li><li><a href=#后续>后续</a></li></ul></nav></div></div><div class=post-content><p>基于 Web Assembly (WASM)为 Milvus 实现 UDF</p><p>milvus 官方网站：<a href=https://milvus.io/>milvus</a>/<a href=https://github.com/milvus-io/milvus>milvus-repos</a></p><p>开发仓库：<a href=https://github.com/milvus-ospp-2022-wasm-udf>milvus-ospp-2022-wasm-udf</a></p><p>对应PR：<a href=https://github.com/milvus-io/milvus/pull/19489>UDF For Milvus [OSPP 2022] by wzymumon · Pull Request #19489 · milvus-io/milvus</a></p><h1 id=项目背景>项目背景</h1><p>该项目来自 ospp 2022Milvus 是一个世界级的分布式向量数据库。我们希望通过引入 Web Assembly 将 UDF 添加到 Milvus 来进一步丰富它。该项目分为两部分：</p><ol><li>实现一个UDF框架，支持创建和删除function utility，并且支持运行web assembly。</li><li>植入一些UDF触发点并实现一个关于UDF如何工作的小demo。</li></ol><h1 id=项目技术栈>项目技术栈</h1><ul><li>WebAssembly、antlr、grpc</li><li>Go、C++、Rust</li></ul><h1 id=方案描述>方案描述</h1><p>UDF是由用户提供的函数，在数据库领域，UDF 代表一种机制：用户通过添加函数来扩展数据库功能。在关系型数据库标准中，将UDF分为标量函数（Scalar Function）和表值函数（Table Function）。调用标量函数只用返回一个单一的值，而表值函数则返回包含多行多列的表格。如果 Milvus 有支持 UDF 的能力，用户可以通过 hook 读、写和索引路径来添加用户自定义的数据处理，如数据规范化、数据剔除和自定义排名策略。</p><p>考虑到 Milvus 目前不支持 sql，所以把 UDF 应用于 ddl/dml 链路的可行性不是很高。因为创建 UDF 涉及到大量的语法定义内容，工作量极大，而且和 Milvus 目前链路结合性不高。在和项目导师沟通过后，修改了原有的项目申请书中的设计方案和排期，对原有的设计方案进行优化，将 UDF 能力加在 exprssion 里面。所以实际项目设计方案分为三个部分：</p><p>1）实现一个UDF框架，支持创建和删除 function utility，function 保存在 rootcoord 中。</p><p>2）将 UDF 加入 expression 中，添加 UDF 语法解析和词法解析。</p><p>3）在执行引擎中添加 wasm runtime，执行 UDF 算子， 丰富 Milvus 的标量过滤能力。</p><h2 id=函数存储><strong>函数存储</strong></h2><p>实现一个 UDF 框架，支持创建和删除 function utility，function 保存在 rootcoord 中。</p><p><code>create/drop function</code> 属于 DDL(Data Definition Language)。其流程应类似 Milvus 中现有的 DDL 操作，从 SDK 发起 rpc 请求，在创建函数时，需要给出函数名称、函数运行参数、函数返回参数、函数本体（wasm）；在删除函数时，需要给出函数名称，函数名称是 UDF 在 Milvus 中的唯一标识。该类请求流转于 <code>SDK</code>、<code>proxy</code>、<code>rootcoord</code> 等多个模块，最后保存在 rootcoord 的 meta table 中。</p><p><img src=https://mario-1302125365.cos.ap-guangzhou.myqcloud.com/blog/202303011708544.png alt=img></p><h2 id=函数解析>函数解析</h2><p>将 UDF 加入标量表达式中，丰富混合查询能力。类似下述方式：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-Python data-lang=Python><span class=line><span class=cl><span class=n>create</span> <span class=n>function</span> <span class=nb>filter</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>res</span> <span class=o>=</span> <span class=n>collection</span><span class=o>.</span><span class=n>search</span><span class=p>(</span><span class=n>vectors</span><span class=p>,</span> <span class=s2>&#34;udf(filter, udf_args)&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>目前 Milvus 对标量表达式的处理采用了一个前后端分离的设计，前端 Proxy 完成表达式的解析形成 logical plan 抽象语法树，后端解析 logical plan 生成 physical plan ，前后端通过 logical plan 进行通信。</p><p>在 Proxy 完成 UDF 标量表达式的解析。解析得到将要调用的函数名称时，再从 rootcoord 拿到函数名称对应的函数运行参数、函数返回参数、函数本体（wasm），生成一颗 AST 抽象语法树。之后抽象语法树会被传递到执行引擎 segcore，segcore 解析抽象语法树生成 physical plan ，前后端通过 logical plan 进行通信。</p><p><img src=https://mario-1302125365.cos.ap-guangzhou.myqcloud.com/blog/202303011708944.png alt=img></p><h2 id=函数执行>函数执行</h2><p>在执行引擎中添加 wasm runtime，执行 UDF 算子， 丰富 Milvus 的标量过滤能力。</p><p>对于 physical plan，segcore 采用了一个访问者的设计模式，其中：</p><ul><li>Visitor：应用于 AST 上的操作，包括执行（Exec），解释（Show），检查（Verify）等，Visitor 对 AST 的处理基本上就是一个中序遍历的方式；</li><li>Expr：查询算子的定义，子类是具体查询算子实现；</li></ul><p>所以需要添加 UDF 对应的 AST 操作和查询算子。</p><p>在解析 physical plan 后，需要通过 wasmtime 来编译和执行wasm。所以在执行引擎添加了函数管理模块，负责对Wasmtime虚拟机进行统一管理，提供函数的动态更新，加载，卸载功能。是 Milvus 其他执行模块与 Wasm 拓展交互的中间胶水。</p><p>在执行UDF时，core 接收到 physical plan，plan 中包含有函数名称，函数运行参数、函数本体（wasm）。在函数被调用时，根据函数名称找到函数运行对象，对传入参数进行参数校对以及参数转换成虚拟机可以接受的参数，调用虚拟机执行沙盒，得到返回参数，由于当前函数用来替代 core 中的 elem_func，所以返回参数应为bool类型。</p><h1 id=项目产出>项目产出</h1><ul><li>【已完成】实现一个 UDF 框架，支持创建和删除 function utility，function 保存在 rootcoord 中。</li><li>【已完成】将 UDF 加入 expression 中，添加 UDF 语法解析和词法解析。</li><li>【已完成】在执行引擎中添加 wasm runtime，执行 UDF 算子， 丰富 Milvus 的标量过滤能力。</li></ul><h2 id=项目demo>项目Demo</h2><p>基于 Milvus 中的 <code>hello_milvus.py</code>，编写了<code>hello_milvus_udf.py</code>，展示 UDF 能力。</p><p>链接：https://github.com/milvus-ospp-2022-wasm-udf/udf-example/blob/main/hello_milvus_udf.py</p><p>首先编写源代码，可以使用rust、go、c/c++ 等多种语言编写，目前仅支持基本数据类型、函数返回值应为bool，例如<code>greater_than</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-Rust data-lang=Rust><span class=line><span class=cl><span class=cp>#[no_mangle]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>pub</span><span class=w> </span><span class=k>fn</span> <span class=nf>greater_than</span><span class=p>(</span><span class=n>a</span>: <span class=kt>i64</span><span class=p>,</span><span class=w> </span><span class=n>b</span>: <span class=kt>i64</span><span class=p>)</span><span class=w> </span>-&gt; <span class=kt>bool</span> <span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>return</span><span class=w> </span><span class=n>a</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=n>b</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>然后通过rust-toolchain 打包为 wasm</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ cargo build --release --target wasm32-unknown-unknown
+</span></span></code></pre></td></tr></table></div></div><p>后转换为 wat （wasm的文本格式，便于阅读）</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>$ ~/repos/wabt/bin/wasm2wat greater_than.wasm -o greater_than.wat
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ cat greater_than.wat
+</span></span><span class=line><span class=cl><span class=o>(</span>module
+</span></span><span class=line><span class=cl>  <span class=o>(</span><span class=nb>type</span> <span class=o>(</span><span class=p>;</span>0<span class=p>;</span><span class=o>)</span> <span class=o>(</span>func <span class=o>(</span>param i64 i64<span class=o>)</span> <span class=o>(</span>result i32<span class=o>)))</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>func <span class=nv>$greater_than</span> <span class=o>(</span><span class=nb>type</span> 0<span class=o>)</span> <span class=o>(</span>param i64 i64<span class=o>)</span> <span class=o>(</span>result i32<span class=o>)</span>
+</span></span><span class=line><span class=cl>    local.get <span class=m>0</span>
+</span></span><span class=line><span class=cl>    local.get <span class=m>1</span>
+</span></span><span class=line><span class=cl>    i64.gt_s<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>table <span class=o>(</span><span class=p>;</span>0<span class=p>;</span><span class=o>)</span> <span class=m>1</span> <span class=m>1</span> funcref<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>memory <span class=o>(</span><span class=p>;</span>0<span class=p>;</span><span class=o>)</span> 16<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>global <span class=nv>$__stack_pointer</span> <span class=o>(</span>mut i32<span class=o>)</span> <span class=o>(</span>i32.const 1048576<span class=o>))</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>global <span class=o>(</span><span class=p>;</span>1<span class=p>;</span><span class=o>)</span> i32 <span class=o>(</span>i32.const 1048576<span class=o>))</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>global <span class=o>(</span><span class=p>;</span>2<span class=p>;</span><span class=o>)</span> i32 <span class=o>(</span>i32.const 1048576<span class=o>))</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span><span class=nb>export</span> <span class=s2>&#34;memory&#34;</span> <span class=o>(</span>memory 0<span class=o>))</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span><span class=nb>export</span> <span class=s2>&#34;greater_than&#34;</span> <span class=o>(</span>func <span class=nv>$greater_than</span><span class=o>))</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span><span class=nb>export</span> <span class=s2>&#34;__data_end&#34;</span> <span class=o>(</span>global 1<span class=o>))</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span><span class=nb>export</span> <span class=s2>&#34;__heap_base&#34;</span> <span class=o>(</span>global 2<span class=o>)))</span>
+</span></span></code></pre></td></tr></table></div></div><p>在pyMivus 中使用<code>greater_than</code>函数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-Python data-lang=Python><span class=line><span class=cl><span class=c1># 创建函数</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>wat_body</span> <span class=o>=</span> <span class=s2>&#34;&#34;&#34;(module
+</span></span></span><span class=line><span class=cl><span class=s2>  (type (;0;) (func (param i64 i64) (result i32)))
+</span></span></span><span class=line><span class=cl><span class=s2>  (func $greater_than (type 0) (param i64 i64) (result i32)
+</span></span></span><span class=line><span class=cl><span class=s2>    local.get 0
+</span></span></span><span class=line><span class=cl><span class=s2>    local.get 1
+</span></span></span><span class=line><span class=cl><span class=s2>    i64.gt_s)
+</span></span></span><span class=line><span class=cl><span class=s2>  (table (;0;) 1 1 funcref)
+</span></span></span><span class=line><span class=cl><span class=s2>  (memory (;0;) 16)
+</span></span></span><span class=line><span class=cl><span class=s2>  (global $__stack_pointer (mut i32) (i32.const 1048576))
+</span></span></span><span class=line><span class=cl><span class=s2>  (global (;1;) i32 (i32.const 1048576))
+</span></span></span><span class=line><span class=cl><span class=s2>  (global (;2;) i32 (i32.const 1048576))
+</span></span></span><span class=line><span class=cl><span class=s2>  (export &#34;memory&#34; (memory 0))
+</span></span></span><span class=line><span class=cl><span class=s2>  (export &#34;greater_than&#34; (func $greater_than))
+</span></span></span><span class=line><span class=cl><span class=s2>  (export &#34;__data_end&#34; (global 1))
+</span></span></span><span class=line><span class=cl><span class=s2>  (export &#34;__heap_base&#34; (global 2)))&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>wat_body_base64</span> <span class=o>=</span> <span class=n>base64</span><span class=o>.</span><span class=n>b64encode</span><span class=p>(</span><span class=n>wat_body</span><span class=o>.</span><span class=n>encode</span><span class=p>(</span><span class=s1>&#39;UTF-8&#39;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=n>arg_types</span> <span class=o>=</span> <span class=p>[</span><span class=n>DataType</span><span class=o>.</span><span class=n>INT64</span><span class=p>,</span> <span class=n>DataType</span><span class=o>.</span><span class=n>INT64</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>utility</span><span class=o>.</span><span class=n>create_function</span><span class=p>(</span><span class=s2>&#34;greater_than&#34;</span><span class=p>,</span> <span class=n>wat_body_base64</span><span class=p>,</span> <span class=n>arg_types</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 使用greater_than</span>
+</span></span><span class=line><span class=cl><span class=n>result</span> <span class=o>=</span> <span class=n>hello_milvus_udf</span><span class=o>.</span><span class=n>search</span><span class=p>(</span><span class=n>vectors_to_search</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                                <span class=s2>&#34;embeddings&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                                <span class=n>search_params</span><span class=p>,</span> <span class=n>limit</span><span class=o>=</span><span class=mi>3</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                                <span class=n>expr</span><span class=o>=</span><span class=s2>&#34;UDF </span><span class=se>\&#34;</span><span class=s2>greater_than</span><span class=se>\&#34;</span><span class=s2> [age64, 1000]&#34;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                                <span class=n>output_fields</span><span class=o>=</span><span class=p>[</span><span class=s2>&#34;random&#34;</span><span class=p>,</span> <span class=s2>&#34;age64&#34;</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 删除 UDF 函数</span>
+</span></span><span class=line><span class=cl><span class=n>utility</span><span class=o>.</span><span class=n>drop_function</span><span class=p>(</span><span class=s2>&#34;greater_than&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h1 id=遇到的困难>遇到的困难</h1><p>最初的设计方案不适用于当前的milvus情况，工作量大。和项目导师沟通过后，修改了原有的项目申请书中的设计方案和排期，改进了原有的设计方案，确定了 udf 的具体使用场景，将 UDF 能力应用于混合查询场景。</p><p>Milvus 模块较多，交互处理链路相对复杂。通过咨询项目导师和阅读milvus官方文档，观看bilibili上milvus源码解析视频，快速学习milvus 内部消息通信方式和处理流程，并通过编码加深对milvus rootcoord、 proxy 模块的理解，实现了创建函数、删除函数接口。加深了对gRPC通信的理解。</p><p>不了解milvus 标量过滤流程、没使用过antlr。通过咨询项目导师和阅读milvus内部的属性过滤文档，理解了milvus中标量过滤是怎么用的，Milvus 标量过滤表达式的解析方式，标量查询表达式是怎么被转换成这些查询算子的、以及 segcore 里面查询算子是怎么被执行的。</p><h1 id=项目收获>项目收获</h1><ol><li>制定计划时，应先了解开源项目的整体情况，比如前期对Milvus项目不了解，设想的UDF场景不适用于Milvus，所以最开始的项目设计方案与当前的实际方案不一致。</li><li>应该将项目划分为多个阶段，逐渐给出阶段性成果，对于本项目而言，将其拆分为 UDF函数存储 和 UDF函数解析，更为合适，拆分后，再细分为多个阶段，最后提交时，两个模块也可以分成两次PR，减轻 code review 难度。</li><li>整个项目涉及到多个模块和技术栈，栾老师和龙老师教会了我很多开发技巧和工程思路，比如GDB调试内存问题，go变长参数在实际工程上的应用等问题，这都是我之前没有考虑过的。</li></ol><h1 id=后续>后续</h1><p>补充 OSPP 2022 导师结项审核意见：</p><p>PR 已经合并到社区的分支中，项目完成度在 90% 。其中主要模块 诸如UDF 的 IR 定义、UDF 前端编译解析、UDF 后端编译执行等完成度都很高，并且有比较充分详细的单测；此外，让人惊喜的是，他能考虑项目要求之外的事情，比如他在实现时考虑到了UDF编译和运行时的加速。</p><p>在项目实施过程中，会积极的和导师沟通同步进度，每 1 周会通过文档同步进度，每 2 周视频会议同步进度。他的 PR 修改了 77 个文件，代码改动 11K+ 行，不足之处在于需要合理规划每个模块开发的时间并独立测试分模块的正确性，这样在自身调试和最终代码 Review 中都会带来高效率和便捷性。</p></div><div class=post-copyright><p class=copyright-item><span class=item-title>Author</span>
+<span class=item-content>mumon</span></p><p class=copyright-item><span class=item-title>LastMod</span>
+<span class=item-content>2023-03-01</span></p></div><footer class=post-footer><nav class=post-nav><a class=next href=/post/code-aesthetics-1/><span class="next-text nav-default">代码美学：为何要成为“不嵌套主义者”</span>
+<span class="next-text nav-mobile">Next</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=social-links><a href=wzyubill1104@email.com class="iconfont icon-email" title=email></a>
+<a href=https://github.com/wzymumon class="iconfont icon-github" title=github></a>
+<a href=http://localhost:1313/index.xml type=application/rss+xml class="iconfont icon-rss" title=rss></a></div><div class=copyright><span class=power-by>Powered by <a class=hexo-link href=https://gohugo.io>Hugo</a></span>
+<span class=division>|</span>
+<span class=theme-info>Theme -
+<a class=theme-link href=https://github.com/olOwOlo/hugo-theme-even>Even</a></span>
+<span class=copyright-year>&copy;
+2022 -
+2023<span class=heart><i class="iconfont icon-heart"></i></span><span>mumon</span></span></div></footer><div class=back-to-top id=back-to-top><i class="iconfont icon-up"></i></div></div><script src=https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin=anonymous></script>
+<script type=text/javascript src=/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js></script></body></html>
